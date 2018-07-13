@@ -28,7 +28,12 @@
     "@angular-devkit/schematics": "^0.6.8",
     "@types/jasmine": "^2.6.0",
     "@types/node": "^8.0.31",
+    "@types/semver": "^5.5.0",
     "jasmine": "^2.8.0",
+    "npm-registry-client": "^8.5.1",
+    "rxjs": "^6.0.0",
+    "semver": "^5.3.0",
+    "semver-intersect": "^1.1.2",
     "typescript": "^2.5.2"
   }
 }
