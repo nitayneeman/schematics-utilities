@@ -1,16 +1,27 @@
 {
   "name": "schematics-utilities",
   "version": "0.0.0",
-  "description": "A blank schematics",
+  "author": "Nitay Neeman",
+  "description": "WIP",
+  "homepage": "https://github.com/nitayneeman/schematics-utilities",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nitayneeman/schematics-utilities.git"
+  },
+  "keywords": [
+    "schematic",
+    "schematics",
+    "utility",
+    "utilities",
+    "utils",
+    "angular",
+    "devkit"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
-  "keywords": [
-    "schematics"
-  ],
-  "author": "",
-  "license": "MIT",
   "schematics": "./src/collection.json",
   "dependencies": {
     "@angular-devkit/core": "^0.6.8",
