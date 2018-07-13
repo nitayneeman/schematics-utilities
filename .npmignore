@@ -1,2 +1,4 @@
 .idea
 tsconfig.json
+*.js
+!*.d.ts
