@@ -8,9 +8,6 @@ npm run clean:docs
 # Building the docs
 npm run build:docs
 
-# Navigate to "docs" directory
-cd docs
-
 # Switching to gh-pages branch
 git subtree split --prefix docs/ -b gh-pages
 
@@ -26,5 +23,3 @@ git push -f origin gh-pages:gh-pages
 
 # Removing the local branch
 git branch -D gh-pages
-
-cd ..
