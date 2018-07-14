@@ -1,4 +1,3 @@
-
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -20,6 +19,6 @@ export function parseName(path: string, name: string): Location {
 
   return {
     name: nameWithoutPath,
-    path: normalize('/' + namePath),
+    path: normalize('/' + namePath)
   };
 }

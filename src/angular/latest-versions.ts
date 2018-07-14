@@ -14,5 +14,5 @@ export const latestVersions = {
   TypeScript: '~2.7.2',
   // The versions below must be manually updated when making a new devkit release.
   DevkitBuildAngular: '~0.7.0-beta.1',
-  DevkitBuildNgPackagr: '~0.7.0-beta.1',
+  DevkitBuildNgPackagr: '~0.7.0-beta.1'
 };

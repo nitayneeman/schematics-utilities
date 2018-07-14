@@ -6,42 +6,23 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { JsonObject, JsonParseMode, logging, parseJson } from '@angular-devkit/core';
-import {
-  Rule,
-  SchematicContext,
-  SchematicsException,
-  Tree,
-  chain,
-} from '@angular-devkit/schematics';
+import { Rule, SchematicContext, SchematicsException, Tree, chain } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import * as https from 'https';
-import {
-  EMPTY,
-  Observable,
-  ReplaySubject,
-  concat,
-  from as observableFrom,
-  of as observableOf,
-} from 'rxjs';
+import { EMPTY, Observable, ReplaySubject, concat, from as observableFrom, of as observableOf } from 'rxjs';
 import { ignoreElements, map, mergeMap } from 'rxjs/operators';
 import * as semver from 'semver';
 
 const semverIntersect = require('semver-intersect');
 
-const kPackageJsonDependencyFields = [
-  'dependencies',
-  'devDependencies',
-  'peerDependencies',
-  'optionalDependencies',
-];
-
+const kPackageJsonDependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'];
 
 const npmPackageJsonCache = new Map<string, Observable<JsonObject>>();
 
 function _getVersionFromNpmPackage(json: JsonObject, version: string, loose: boolean): string {
   const distTags = json['dist-tags'] as JsonObject;
   if (distTags && distTags[version]) {
-    return (loose ? '~' : '') + distTags[version] as string;
+    return ((loose ? '~' : '') + distTags[version]) as string;
   } else {
     if (!semver.validRange(version)) {
       throw new SchematicsException(`Invalid range or version: "${version}".`);
@@ -54,9 +35,7 @@ function _getVersionFromNpmPackage(json: JsonObject, version: string, loose: boo
     const maybeMatch = semver.maxSatisfying(packageVersions, version);
 
     if (!maybeMatch) {
-      throw new SchematicsException(
-        `Version "${version}" has no satisfying version for package ${json['name']}`,
-      );
+      throw new SchematicsException(`Version "${version}" has no satisfying version for package ${json['name']}`);
     }
 
     const maybeOperator = version.match(/^[~^]/);
@@ -77,10 +56,7 @@ function _getVersionFromNpmPackage(json: JsonObject, version: string, loose: boo
  * @returns {Observable<JsonObject>} An observable that will put the pacakge.json content.
  * @private
  */
-function _getNpmPackageJson(
-  packageName: string,
-  logger: logging.LoggerApi,
-): Observable<JsonObject> {
+function _getNpmPackageJson(packageName: string, logger: logging.LoggerApi): Observable<JsonObject> {
   const url = `https://registry.npmjs.org/${packageName.replace(/\//g, '%2F')}`;
   logger.debug(`Getting package.json from ${JSON.stringify(packageName)}...`);
 
@@ -90,7 +66,7 @@ function _getNpmPackageJson(
 
     const request = https.request(url, response => {
       let data = '';
-      response.on('data', chunk => data += chunk);
+      response.on('data', chunk => (data += chunk));
       response.on('end', () => {
         try {
           const json = parseJson(data, JsonParseMode.Strict);
@@ -127,7 +103,7 @@ function _getRecursiveVersions(
   packages: { [name: string]: string },
   allVersions: { [name: string]: string },
   logger: logging.LoggerApi,
-  loose: boolean,
+  loose: boolean
 ): Observable<void> {
   return observableFrom(kPackageJsonDependencyFields).pipe(
     mergeMap(field => {
@@ -135,8 +111,8 @@ function _getRecursiveVersions(
       if (deps) {
         return observableFrom(
           Object.keys(deps)
-            .map(depName => depName in deps ? [depName, deps[depName]] : null)
-            .filter(x => !!x),
+            .map(depName => (depName in deps ? [depName, deps[depName]] : null))
+            .filter(x => !!x)
         );
       } else {
         return EMPTY;
@@ -153,22 +129,26 @@ function _getRecursiveVersions(
       }
 
       return _getNpmPackageJson(depName, logger).pipe(
-        map(json => ({ version: packages[depName], depName, depVersion, npmPackageJson: json })),
+        map(json => ({
+          version: packages[depName],
+          depName,
+          depVersion,
+          npmPackageJson: json
+        }))
       );
     }),
-    mergeMap(({version, depName, depVersion, npmPackageJson}) => {
+    mergeMap(({ version, depName, depVersion, npmPackageJson }) => {
       const updateVersion = _getVersionFromNpmPackage(npmPackageJson, version, loose);
       const npmPackageVersions = Object.keys(npmPackageJson['versions'] as JsonObject);
       const match = semver.maxSatisfying(npmPackageVersions, updateVersion);
       if (!match) {
         return EMPTY;
       }
-      if (semver.lt(
-        semverIntersect.parseRange(updateVersion).version,
-        semverIntersect.parseRange(depVersion).version)
+      if (
+        semver.lt(semverIntersect.parseRange(updateVersion).version, semverIntersect.parseRange(depVersion).version)
       ) {
-        throw new SchematicsException(`Cannot downgrade package ${
-          JSON.stringify(depName)} from version "${depVersion}" to "${updateVersion}".`,
+        throw new SchematicsException(
+          `Cannot downgrade package ${JSON.stringify(depName)} from version "${depVersion}" to "${updateVersion}".`
         );
       }
 
@@ -187,9 +167,9 @@ function _getRecursiveVersions(
       if (allVersions[depName]) {
         if (!semver.intersects(allVersions[depName], updateVersion)) {
           throw new SchematicsException(
-            'Cannot update safely because packages have conflicting dependencies. Package '
-            + `${depName} would need to match both versions "${updateVersion}" and `
-            + `"${allVersions[depName]}, which are not compatible.`,
+            'Cannot update safely because packages have conflicting dependencies. Package ' +
+              `${depName} would need to match both versions "${updateVersion}" and ` +
+              `"${allVersions[depName]}, which are not compatible.`
           );
         }
 
@@ -198,14 +178,8 @@ function _getRecursiveVersions(
         allVersions[depName] = updateVersion;
       }
 
-      return _getRecursiveVersions(
-        packageJson,
-        dependencies,
-        allVersions,
-        logger,
-        loose,
-      );
-    }),
+      return _getRecursiveVersions(packageJson, dependencies, allVersions, logger, loose);
+    })
   );
 }
 
@@ -218,14 +192,10 @@ function _getRecursiveVersions(
  * @param loose Whether to use loose version operators (instead of specific versions).
  * @private
  */
-export function updatePackageJson(
-  supportedPackages: string[],
-  maybeVersion = 'latest',
-  loose = false,
-): Rule {
+export function updatePackageJson(supportedPackages: string[], maybeVersion = 'latest', loose = false): Rule {
   const version = maybeVersion ? maybeVersion : 'latest';
   // This will be updated as we read the NPM repository.
-  const allVersions: { [name: string]: string} = {};
+  const allVersions: { [name: string]: string } = {};
 
   return chain([
     (tree: Tree, context: SchematicContext): Observable<Tree> => {
@@ -243,10 +213,8 @@ export function updatePackageJson(
       }
 
       return concat(
-        _getRecursiveVersions(packageJson, packages, allVersions, context.logger, loose).pipe(
-          ignoreElements(),
-        ),
-        observableOf(tree),
+        _getRecursiveVersions(packageJson, packages, allVersions, context.logger, loose).pipe(ignoreElements()),
+        observableOf(tree)
       );
     },
     (tree: Tree) => {
@@ -278,6 +246,6 @@ export function updatePackageJson(
     },
     (_tree: Tree, context: SchematicContext) => {
       context.addTask(new NodePackageInstallTask());
-    },
+    }
   ]);
 }

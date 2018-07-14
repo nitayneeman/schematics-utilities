@@ -5,13 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import {
-  JsonAstArray,
-  JsonAstKeyValue,
-  JsonAstNode,
-  JsonAstObject,
-  JsonValue,
-} from '@angular-devkit/core';
+import { JsonAstArray, JsonAstKeyValue, JsonAstNode, JsonAstObject, JsonValue } from '@angular-devkit/core';
 import { UpdateRecorder } from '@angular-devkit/schematics';
 
 export function appendPropertyInAstObject(
@@ -19,7 +13,7 @@ export function appendPropertyInAstObject(
   node: JsonAstObject,
   propertyName: string,
   value: JsonValue,
-  indent: number,
+  indent: number
 ) {
   const indentStr = _buildIndent(indent);
 
@@ -31,9 +25,7 @@ export function appendPropertyInAstObject(
 
   recorder.insertLeft(
     node.end.offset - 1,
-    '  '
-    + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}`
-    + indentStr.slice(0, -2),
+    '  ' + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` + indentStr.slice(0, -2)
   );
 }
 
@@ -42,9 +34,8 @@ export function insertPropertyInAstObjectInOrder(
   node: JsonAstObject,
   propertyName: string,
   value: JsonValue,
-  indent: number,
+  indent: number
 ) {
-
   if (node.properties.length === 0) {
     appendPropertyInAstObject(recorder, node, propertyName, value, indent);
 
@@ -78,25 +69,15 @@ export function insertPropertyInAstObjectInOrder(
 
   const indentStr = _buildIndent(indent);
 
-  const insertIndex = insertAfterProp === null
-    ? node.start.offset + 1
-    : insertAfterProp.end.offset + 1;
+  const insertIndex = insertAfterProp === null ? node.start.offset + 1 : insertAfterProp.end.offset + 1;
 
   recorder.insertRight(
     insertIndex,
-    indentStr
-    + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}`
-    + ',',
+    indentStr + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` + ','
   );
 }
 
-
-export function appendValueInAstArray(
-  recorder: UpdateRecorder,
-  node: JsonAstArray,
-  value: JsonValue,
-  indent = 4,
-) {
+export function appendValueInAstArray(recorder: UpdateRecorder, node: JsonAstArray, value: JsonValue, indent = 4) {
   const indentStr = _buildIndent(indent);
 
   if (node.elements.length > 0) {
@@ -107,17 +88,11 @@ export function appendValueInAstArray(
 
   recorder.insertLeft(
     node.end.offset - 1,
-    '  '
-    + JSON.stringify(value, null, 2).replace(/\n/g, indentStr)
-    + indentStr.slice(0, -2),
+    '  ' + JSON.stringify(value, null, 2).replace(/\n/g, indentStr) + indentStr.slice(0, -2)
   );
 }
 
-
-export function findPropertyInAstObject(
-  node: JsonAstObject,
-  propertyName: string,
-): JsonAstNode | null {
+export function findPropertyInAstObject(node: JsonAstObject, propertyName: string): JsonAstNode | null {
   let maybeNode: JsonAstNode | null = null;
   for (const property of node.properties) {
     if (property.key.value == propertyName) {

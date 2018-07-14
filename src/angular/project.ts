@@ -7,15 +7,12 @@
  */
 import { WorkspaceProject } from './config';
 
-
 /**
  * Build a default project path for generating.
  * @param project The project to build the path for.
  */
 export function buildDefaultPath(project: WorkspaceProject): string {
-  const root = project.sourceRoot
-    ? `/${project.sourceRoot}/`
-    : `/${project.root}/src/`;
+  const root = project.sourceRoot ? `/${project.sourceRoot}/` : `/${project.root}/src/`;
 
   const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
 

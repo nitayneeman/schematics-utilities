@@ -9,8 +9,9 @@ import { InsertChange } from '../angular';
  * @param src the src path of the html file to parse
  */
 export function getHeadTag(host: Tree, src: string) {
-  const document = parse5.parse(src,
-      { sourceCodeLocationInfo: true }) as parse5.AST.Default.Document;
+  const document = parse5.parse(src, {
+    sourceCodeLocationInfo: true
+  }) as parse5.AST.Default.Document;
 
   let head;
   const visit = (nodes: parse5.AST.Default.Node[]) => {
