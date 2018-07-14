@@ -4,6 +4,7 @@ echo -e "\033[0;32mDeploying updates to gh-pages...\033[0m"
 
 # Cleaning up the directory
 npm run clean:docs
+git worktree prune
 
 # Set up a worktree in directory docs checked out on branch gh-pages
 git worktree add docs gh-pages
