@@ -1,8 +1,8 @@
 {
   "name": "schematics-utilities",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "author": "Nitay Neeman",
-  "description": "WIP",
+  "description": "🛠️ Useful exported utilities for working with Schematics",
   "homepage": "https://github.com/nitayneeman/schematics-utilities",
   "license": "MIT",
   "repository": {
