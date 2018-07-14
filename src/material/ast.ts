@@ -4,11 +4,11 @@ import * as ts from 'typescript';
 import {
   addImportToModule,
   InsertChange,
-  Project,
-  getWorkspace,
   getAppModulePath,
+  getWorkspace,
   findModuleFromOptions as internalFindModule
 } from '../angular';
+import { Project } from './config';
 
 /** Reads file given path and returns TypeScript source file. */
 export function getSourceFile(host: Tree, path: string): ts.SourceFile {
