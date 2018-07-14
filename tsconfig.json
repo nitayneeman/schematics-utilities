@@ -1,4 +1,5 @@
 {
+  "main": "index.js",
   "compilerOptions": {
     "baseUrl": "tsconfig",
     "lib": [
@@ -14,10 +15,11 @@
     "noImplicitThis": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
-    "rootDir": "src/",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "strictNullChecks": true,
     "target": "es6",
     "types": [
