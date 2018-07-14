@@ -27,6 +27,7 @@
     "clean": "rm -rf ./dist",
     "format": "prettier --write '**/*.ts' '**/*.json'",
     "format:staged": "pretty-quick --staged",
+    "precommit": "npm run format:staged",
     "prepublish": "npm run clean && npm run build",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
