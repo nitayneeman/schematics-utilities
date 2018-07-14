@@ -9,7 +9,7 @@ npm run clean:docs
 npm run build:docs
 
 # Removing the local branch
-git push origin :gh-pages
+git branch -D gh-pages
 
 # Adding changes to git
 git add .
