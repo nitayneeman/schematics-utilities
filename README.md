@@ -1,28 +1,19 @@
-# Getting Started With Schematics
+<div style="text-align: center; font-size: 48px; padding: 1em; font-weight: bold;">
+    Schematics Utilities
+</div>
+<hr />
+[![npm](https://img.shields.io/npm/v/schematics-utilities.svg?colorB=brightgreen)](https://www.npmjs.com/package/schematics-utilities)
+[![Package Version](https://img.shields.io/github/package-json/v/nitayneeman/schematics-utilities.svg)](https://github.com/nitayneeman/schematics-utilities)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nitayneeman/schematics-utilities/blob/master/LICENSE)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
-This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
+## Motivation
 
-### Testing
+At the moment, none of the utility functions from Angular DevKit is exported.
 
-To test locally, install `@angular-devkit/schematics` globally and use the `schematics` command line tool. That tool acts the same as the `generate` command of the Angular CLI, but also has a debug mode.
+This project was created for that purpose - _providing a collection of general and useful utilities for Schematics, based on non-exported existing functions and further_.
 
-Check the documentation with
-```bash
-schematics --help
-```
+## Copyright
 
-### Unit Testing
-
-`npm run test` will run the unit tests, using Jasmine as a runner and test framework.
-
-### Publishing
-
-To publish, simply do:
-
-```bash
-npm run build
-npm publish
-```
-
-That's it!
- 
+- [Angular DevKit](https://github.com/angular/angular-cli/tree/master/packages/schematics)
+- [Angular Material](https://github.com/angular/material2/tree/master/src/lib/schematics/utils)
