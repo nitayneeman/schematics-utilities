@@ -6,9 +6,9 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![docs: typedoc](https://img.shields.io/badge/docs-typedoc-4D0080.svg)](https://nitayneeman.github.io/schematics-utilities/)
 
-At the moment, none of the utility functions from the Angular Schematics package are exported.
+At the moment, none of the utilities from the Angular Schematics package are exported.
 
-This project was created from that purpose - _providing a collection of general and useful utilities for Schematics, based on non-exported existing functions and further_.
+This project was created from that purpose - _providing a collection of general and useful utilities for Schematics, based on non-exported existing utilities and further_.
 
 ## How to Install
 
@@ -44,6 +44,8 @@ export default function(): Rule {
   };
 }
 ```
+
+Check out the [API docs](https://nitayneeman.github.io/schematics-utilities/) for the available utilities.
 
 ## Disclaimer
 
