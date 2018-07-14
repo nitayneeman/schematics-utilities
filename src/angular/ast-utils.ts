@@ -162,6 +162,7 @@ export function findNode(node: ts.Node, kind: ts.SyntaxKind, text: string): ts.N
 /**
  * Helper for sorting nodes.
  * @return function to sort nodes in increasing order of position in sourceFile
+ * @private
  */
 function nodesByPosition(first: ts.Node, second: ts.Node): number {
   return first.getStart() - second.getStart();
@@ -215,6 +216,9 @@ export function getContentOfKeyLiteral(_source: ts.SourceFile, node: ts.Node): s
   }
 }
 
+/**
+ * @private
+ */
 function _angularImportsFromNode(node: ts.ImportDeclaration, _sourceFile: ts.SourceFile): { [name: string]: string } {
   const ms = node.moduleSpecifier;
   let modulePath: string;

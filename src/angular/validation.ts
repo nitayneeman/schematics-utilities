@@ -49,6 +49,9 @@ export function validateProjectName(projectName: string) {
   }
 }
 
+/**
+ * @private
+ */
 function getRegExpFailPosition(str: string): number | null {
   const isScope = /^@.*\/.*/.test(str);
   if (isScope) {

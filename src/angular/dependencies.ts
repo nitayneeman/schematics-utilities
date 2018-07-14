@@ -83,6 +83,9 @@ export function getPackageJsonDependency(tree: Tree, name: string): NodeDependen
   return dep;
 }
 
+/**
+ * @private
+ */
 function _readPackageJson(tree: Tree): JsonAstObject {
   const buffer = tree.read(pkgJsonPath);
   if (buffer === null) {

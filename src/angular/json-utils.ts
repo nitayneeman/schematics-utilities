@@ -103,6 +103,9 @@ export function findPropertyInAstObject(node: JsonAstObject, propertyName: strin
   return maybeNode;
 }
 
+/**
+ * @private
+ */
 function _buildIndent(count: number): string {
   return '\n' + new Array(count + 1).join(' ');
 }

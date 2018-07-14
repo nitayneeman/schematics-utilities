@@ -19,6 +19,9 @@ const kPackageJsonDependencyFields = ['dependencies', 'devDependencies', 'peerDe
 
 const npmPackageJsonCache = new Map<string, Observable<JsonObject>>();
 
+/**
+ * @private
+ */
 function _getVersionFromNpmPackage(json: JsonObject, version: string, loose: boolean): string {
   const distTags = json['dist-tags'] as JsonObject;
   if (distTags && distTags[version]) {
@@ -190,7 +193,6 @@ function _getRecursiveVersions(
  * @param supportedPackages A list of packages to update (at the same version).
  * @param maybeVersion A version to update those packages to.
  * @param loose Whether to use loose version operators (instead of specific versions).
- * @private
  */
 export function updatePackageJson(supportedPackages: string[], maybeVersion = 'latest', loose = false): Rule {
   const version = maybeVersion ? maybeVersion : 'latest';
