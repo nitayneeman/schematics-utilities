@@ -24,12 +24,14 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:docs": "typedoc --options ./.typedoc.json",
     "clean": "rm -rf ./dist",
+    "clean:docs": "rm -rf ./docs",
     "format": "prettier --write '**/*.ts' '**/*.json'",
     "format:staged": "pretty-quick --staged",
     "precommit": "npm run format:staged",
     "prepublish": "npm run clean && npm run build",
-    "doc": "typedoc --options ./.typedoc.json",
+    "publish:docs": "npm run clean:docs && npm run build:docs && ./scripts/publish-docs.sh",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
   "dependencies": {
