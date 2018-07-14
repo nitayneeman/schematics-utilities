@@ -31,7 +31,7 @@
     "format:staged": "pretty-quick --staged",
     "precommit": "npm run format:staged",
     "prepublish": "npm run clean && npm run build",
-    "publish:docs": "npm run clean:docs && npm run build:docs && ./scripts/publish-docs.sh",
+    "publish:docs": "./scripts/publish-docs.sh",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
   "dependencies": {
