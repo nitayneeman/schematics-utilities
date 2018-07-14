@@ -2,24 +2,30 @@
 
 echo -e "\033[0;32mDeploying updates to gh-pages...\033[0m"
 
+# Stop on error
+set -e
+
 # Cleaning up the directory
 npm run clean:docs
-
-# Set up a worktree in directory docs checked out on branch gh-pages
-git worktree add docs gh-pages
 
 # Building the docs
 npm run build:docs
 
-# Navigate to "docs" directory
-cd docs
+# Switching to gh-pages branch
+git checkout -b gh-pages
 
 # Adding changes to git
-git add .
+git add -f docs
 
 # Commit changes
 msg="Deployment process - `date`"
 git commit -m "$msg"
 
 # Pushing changes
-git push origin gh-pages
+git push origin `git subtree split --prefix docs`:gh-pages --force
+
+# Switching to master branch
+git checkout master
+
+# Removing the local branch
+git branch -D gh-pages
