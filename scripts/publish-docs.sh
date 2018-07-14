@@ -8,9 +8,6 @@ npm run clean:docs
 # Building the docs
 npm run build:docs
 
-# Removing the local branch
-git branch -D gh-pages
-
 # Adding changes to git
 git add .
 
@@ -20,3 +17,6 @@ git commit -m "$msg"
 
 # Pushing changes
 git subtree push --prefix docs origin gh-pages
+
+# Removing the local branch
+git branch -D gh-pages
