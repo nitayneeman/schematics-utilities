@@ -4,10 +4,6 @@ echo -e "\033[0;32mDeploying updates to gh-pages...\033[0m"
 
 # Cleaning up the directory
 npm run clean:docs
-git worktree prune
-
-# Set up a worktree in directory docs checked out on branch gh-pages
-git worktree add docs gh-pages
 
 # Building the docs
 npm run build:docs
@@ -23,6 +19,6 @@ msg="Deployment process - `date`"
 git commit -m "$msg"
 
 # Pushing changes
-git push origin gh-pages
+git subtree push --prefix docs/ origin gh-pages
 
 cd ..
