@@ -1,7 +1,5 @@
-<div style="text-align: center; font-size: 48px; padding: 1em; font-weight: bold;">
-    Schematics Utilities
-</div>
-<hr />
+# Schematics Utilities
+
 [![npm](https://img.shields.io/npm/v/schematics-utilities.svg?colorB=brightgreen)](https://www.npmjs.com/package/schematics-utilities)
 [![Package Version](https://img.shields.io/github/package-json/v/nitayneeman/schematics-utilities.svg)](https://github.com/nitayneeman/schematics-utilities)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nitayneeman/schematics-utilities/blob/master/LICENSE)
