@@ -17,6 +17,31 @@ To Install using npm, simply do:
 npm install schematics-utilities
 ```
 
+## How to Use
+
+```javascript
+import { Rule, Tree } from '@angular-devkit/schematics';
+// 1. Import the needed utilities
+import { addPackageJsonDependency, NodeDependency, NodeDependencyType } from 'schematics-utilities';
+
+function addDependencies(host: Tree): Tree {
+  const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Default, version: '^2.5.2', name: 'typescript' }];
+
+  // 2. Just use it whenever you need :)
+  dependencies.forEach(dependency => addPackageJsonDependency(host, dependency));
+
+  return host;
+}
+
+export default function(): Rule {
+  return (tree: Tree) => {
+    addDependencies(tree);
+
+    return tree;
+  };
+}
+```
+
 ## Disclaimer
 
 This repository contains code which is directly taken from:
