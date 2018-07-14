@@ -11,6 +11,8 @@ npm run clean:docs
 # Building the docs
 npm run build:docs
 
+cp _config.yml ./docs
+
 # Switching to gh-pages branch
 git checkout -b gh-pages
 
