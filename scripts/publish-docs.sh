@@ -5,6 +5,12 @@ echo -e "\033[0;32mDeploying updates to gh-pages...\033[0m"
 # Set up a worktree in directory docs checked out on branch gh-pages
 git worktree add docs gh-pages
 
+# Cleaning up the directory
+npm run clean:docs
+
+# Building the docs
+npm run docs:docs
+
 # Navigate to "docs" directory
 cd docs
 
