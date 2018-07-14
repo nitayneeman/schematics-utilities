@@ -11,6 +11,9 @@ npm run build:docs
 # Navigate to "docs" directory
 cd docs
 
+# Switching to gh-pages branch
+git subtree split --prefix docs/ -b gh-pages
+
 # Adding changes to git
 git add .
 
@@ -19,6 +22,9 @@ msg="Deployment process - `date`"
 git commit -m "$msg"
 
 # Pushing changes
-git subtree push --prefix docs/ origin gh-pages
+git push -f origin gh-pages:gh-pages
+
+# Removing the local branch
+git branch -D gh-pages
 
 cd ..
