@@ -1,6 +1,6 @@
 {
   "name": "schematics-utilities",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Nitay Neeman",
   "description": "WIP",
   "homepage": "https://github.com/nitayneeman/schematics-utilities",
@@ -37,7 +37,7 @@
     "@types/semver": "^5.5.0",
     "jasmine": "^2.8.0"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "npm-registry-client": "^8.5.1",
     "parse5": "^5.0.0",
     "rxjs": "^6.0.0",
