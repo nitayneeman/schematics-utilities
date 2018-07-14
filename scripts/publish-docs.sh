@@ -8,8 +8,18 @@ npm run clean:docs
 # Building the docs
 npm run build:docs
 
-# Fetches the branch
-git push origin :gh-pages
+# Set up a worktree in directory docs checked out on branch gh-pages
+git worktree add docs gh-pages
+
+# Navigate to "docs" directory
+cd docs
+
+# Adding changes to git
+git add .
+
+# Commit changes
+msg="Deployment process - `date`"
+git commit -m "$msg"
 
 # Pushing changes
-git subtree push --prefix docs origin gh-pages
+git push origin gh-pages
