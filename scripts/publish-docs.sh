@@ -8,8 +8,8 @@ npm run clean:docs
 # Building the docs
 npm run build:docs
 
-# Switching to gh-pages branch
-git subtree split --prefix docs/ -b gh-pages
+# Removing the local branch
+git push origin :gh-pages
 
 # Adding changes to git
 git add .
@@ -19,7 +19,4 @@ msg="Deployment process - `date`"
 git commit -m "$msg"
 
 # Pushing changes
-git push -f origin gh-pages:gh-pages
-
-# Removing the local branch
-git branch -D gh-pages
+git subtree push --prefix docs origin gh-pages
