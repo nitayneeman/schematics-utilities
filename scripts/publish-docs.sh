@@ -11,15 +11,5 @@ npm run build:docs
 # Fetches the branch
 git push origin :gh-pages
 
-# Adding changes to git
-git add .
-
-# Commit changes
-msg="Deployment process - `date`"
-git commit -m "$msg"
-
 # Pushing changes
 git subtree push --prefix docs origin gh-pages
-
-# Removing the local branch
-git branch -D gh-pages
