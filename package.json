@@ -29,6 +29,7 @@
     "format:staged": "pretty-quick --staged",
     "precommit": "npm run format:staged",
     "prepublish": "npm run clean && npm run build",
+    "doc": "typedoc --options ./.typedoc.json",
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
   "dependencies": {
@@ -47,6 +48,7 @@
     "husky": "^0.14.3",
     "jasmine": "^2.8.0",
     "prettier": "^1.13.5",
-    "pretty-quick": "^1.6.0"
+    "pretty-quick": "^1.6.0",
+    "typedoc": "^0.11.1"
   }
 }

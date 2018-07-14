@@ -1,0 +1,6 @@
+{
+  "out": "./docs",
+  "exclude": "**/*+(spec|index).ts",
+  "excludeExternals": true,
+  "hideGenerator": true
+}

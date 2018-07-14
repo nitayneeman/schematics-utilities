@@ -2,3 +2,4 @@
 tsconfig.json
 *.ts
 !*.d.ts
+docs
