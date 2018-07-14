@@ -9,7 +9,7 @@ git worktree add docs gh-pages
 npm run clean:docs
 
 # Building the docs
-npm run docs:docs
+npm run build:docs
 
 # Navigate to "docs" directory
 cd docs
