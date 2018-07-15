@@ -28,7 +28,9 @@ import { Rule, Tree } from '@angular-devkit/schematics';
 import { addPackageJsonDependency, NodeDependency, NodeDependencyType } from 'schematics-utilities';
 
 function addDependencies(host: Tree): Tree {
-  const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Default, version: '4.17.10', name: 'lodash-es' }];
+  const dependencies: NodeDependency[] = [
+    { type: NodeDependencyType.Default, version: '4.17.10', name: 'lodash-es' }
+  ];
 
   // 2. Just use it whenever you need :)
   dependencies.forEach(dependency => addPackageJsonDependency(host, dependency));
