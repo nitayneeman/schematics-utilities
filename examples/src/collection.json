@@ -3,7 +3,7 @@
   "schematics": {
     "add-bootstrap": {
       "description": "Installs Bootstrap with dependencies (jQuery, Popper.js)",
-      "factory": "./examples/add-bootstrap#examples"
+      "factory": "./add-bootstrap/add-bootstrap"
     }
   }
 }
