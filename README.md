@@ -1,7 +1,7 @@
 # Schematics Utilities
 
 [![npm](https://img.shields.io/npm/v/schematics-utilities.svg?colorB=brightgreen)](https://www.npmjs.com/package/schematics-utilities)
-[![Package Version](https://img.shields.io/github/package-json/v/badges/shields.svg)](https://github.com/nitayneeman/schematics-utilities)
+[![Package Version](https://img.shields.io/github/package-json/v/nitayneeman/schematics-utilities.svg)](https://github.com/nitayneeman/schematics-utilities)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nitayneeman/schematics-utilities/blob/master/LICENSE)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![docs: typedoc](https://img.shields.io/badge/docs-typedoc-4D0080.svg)](https://nitayneeman.github.io/schematics-utilities/)
@@ -28,9 +28,7 @@ import { Rule, Tree } from '@angular-devkit/schematics';
 import { addPackageJsonDependency, NodeDependency, NodeDependencyType } from 'schematics-utilities';
 
 function addDependencies(host: Tree): Tree {
-  const dependencies: NodeDependency[] = [
-    { type: NodeDependencyType.Default, version: '4.17.10', name: 'lodash-es' }
-  ];
+  const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Default, version: '4.17.10', name: 'lodash-es' }];
 
   // 2. Just use it whenever you need :)
   dependencies.forEach(dependency => addPackageJsonDependency(host, dependency));
