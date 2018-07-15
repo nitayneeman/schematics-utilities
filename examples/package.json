@@ -17,7 +17,7 @@
     "@types/jasmine": "^2.6.0",
     "@types/node": "^8.0.31",
     "jasmine": "^2.8.0",
-    "schematics-utilities": "0.0.4",
+    "schematics-utilities": "^1.0.0",
     "typescript": "^2.5.2"
   }
 }
