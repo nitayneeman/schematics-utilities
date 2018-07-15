@@ -4,3 +4,5 @@ tsconfig.json
 !*.d.ts
 docs
 examples
+scripts
+_config.yml
