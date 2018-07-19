@@ -86,19 +86,3 @@ export function getStylesPath(host: Tree, project: Project): string {
 
   throw new SchematicsException('No style files could be found into which a theme could be added');
 }
-
-/** Wraps the internal find module from options with undefined path handling  */
-export function findModuleFromOptionsWithPathHandling(host: Tree, options: any) {
-  const workspace = getWorkspace(host);
-  if (!options.project) {
-    options.project = Object.keys(workspace.projects)[0];
-  }
-
-  const project = workspace.projects[options.project];
-
-  if (options.path === undefined) {
-    options.path = `/${project.root}/src/app`;
-  }
-
-  return internalFindModule(host, options);
-}
