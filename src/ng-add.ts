@@ -1,7 +1,7 @@
 import { chain, noop, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 
-import { addPackageJsonDependency, getWorkspace, NodeDependency, NodeDependencyType } from './angular';
+import { addPackageJsonDependency, getWorkspace, NodeDependency } from './angular';
 import { addModuleImportToRootModule, getProjectFromWorkspace } from './material';
 
 export interface NgAddSchema {
@@ -80,17 +80,21 @@ export function addPolyfillsToScripts(options: NgAddSchema, polyfills: string[] 
         const scripts = projectObject.architect.build.options.scripts;
 
         polyfills.forEach(polyfill => {
-          scripts.push({
-            input: polyfill
-          });
+          const isExist = scripts.filter(script => script.input === polyfill).length > 0;
+
+          if (!isExist) {
+            scripts.push({
+              input: polyfill
+            });
+          }
         });
         host.overwrite('angular.json', JSON.stringify(angularJsonFileObject, null, 2));
       }
     } catch (e) {
-      context.logger.log('error', `🚫 Failed to add the polyfill "${polyfillName}" to scripts`);
+      context.logger.log('error', `🚫 Failed to add the polyfills into the project's scripts`);
     }
 
-    context.logger.log('info', `🖊️ Added "${polyfillName}" polyfill to scripts`);
+    context.logger.log('info', `🖊️ Added the polyfills into the project's scripts`);
 
     return host;
   };
