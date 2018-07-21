@@ -6,8 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-
-export const ANGULAR_CLI_WORKSPACE_PATH = '/angular.json';
+import { WorkspaceSchema } from '../angular/config';
 
 /** An Angular CLI Workspacer config (angular.json) */
 export interface Workspace {
@@ -75,6 +74,7 @@ export interface Project {
 export interface ProjectBuildOptions {
   /** Link to schema. */
   $schema?: string;
+
   [k: string]: any;
 }
 
@@ -82,7 +82,7 @@ export interface ProjectBuildOptions {
  * Gets a project from the Angular CLI workspace. If no project name is given, the first project
  * will be retrieved.
  */
-export function getProjectFromWorkspace(config: Workspace, projectName?: string): Project {
+export function getProjectFromWorkspace(config: Workspace | WorkspaceSchema, projectName?: string): Project {
   if (config.projects) {
     if (projectName) {
       const project = config.projects[projectName];
