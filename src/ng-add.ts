@@ -29,7 +29,8 @@ export interface NgAddSchema {
 export interface NgAddConfig {
   moduleName: string;
   packageName: string;
-  dependencies: NodeDependency[];
+  dependencies?: NodeDependency[];
+  polyfills?: string[];
 }
 
 export function addPackageJsonDependencies(dependencies: NodeDependency[] = []): Rule {
@@ -67,11 +68,8 @@ export function addModuleToImports(options: NgAddSchema, moduleName: string, pac
   };
 }
 
-export function addPolyfillsToScripts(options: NgAddSchema) {
+export function addPolyfillsToScripts(options: NgAddSchema, polyfills: string[] = []) {
   return (host: Tree, context: SchematicContext) => {
-    const polyfillPath = 'node_modules/@webcomponents/custom-elements/src/native-shim.js';
-    const polyfillName = 'custom-elements';
-
     try {
       const angularJsonFile = host.read('angular.json');
 
@@ -81,8 +79,10 @@ export function addPolyfillsToScripts(options: NgAddSchema) {
         const projectObject = angularJsonFileObject.projects[project];
         const scripts = projectObject.architect.build.options.scripts;
 
-        scripts.push({
-          input: polyfillPath
+        polyfills.forEach(polyfill => {
+          scripts.push({
+            input: polyfill
+          });
         });
         host.overwrite('angular.json', JSON.stringify(angularJsonFileObject, null, 2));
       }
@@ -101,6 +101,6 @@ export function ngAdd(options: NgAddSchema, config: NgAddConfig): Rule {
     options && options.skipPackageJson ? noop() : addPackageJsonDependencies(config.dependencies),
     options && options.skipPackageJson ? noop() : installPackageJsonDependencies(),
     options && options.skipModuleImport ? noop() : addModuleToImports(options, config.moduleName, config.packageName),
-    options && options.skipPolyfills ? noop() : addPolyfillsToScripts(options)
+    options && options.skipPolyfills ? noop() : addPolyfillsToScripts(options, config.polyfills)
   ]);
 }
