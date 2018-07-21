@@ -27,9 +27,24 @@ export interface NgAddSchema {
 }
 
 export interface NgAddConfig {
+  /**
+   * A name for the module which will be added to the imports of the root module
+   */
   moduleName: string;
+
+  /**
+   * A name for the package that exports the module
+   */
   packageName: string;
+
+  /**
+   * A list of dependencies that will be added and installed
+   */
   dependencies?: NodeDependency[];
+
+  /**
+   * A list of polyfills that will be added into the project's scripts
+   */
   polyfills?: string[];
 }
 
