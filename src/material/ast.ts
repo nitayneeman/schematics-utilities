@@ -1,14 +1,22 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
 import { normalize } from '@angular-devkit/core';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import * as ts from 'typescript';
 import {
   addImportToModule,
   InsertChange,
-  getAppModulePath,
+  WorkspaceProject,
   getWorkspace,
+  getAppModulePath,
   findModuleFromOptions as internalFindModule
 } from '../angular';
-import { Project } from './config';
+import * as ts from 'typescript';
 
 /** Reads file given path and returns TypeScript source file. */
 export function getSourceFile(host: Tree, path: string): ts.SourceFile {
@@ -21,7 +29,7 @@ export function getSourceFile(host: Tree, path: string): ts.SourceFile {
 }
 
 /** Import and add module to root app module. */
-export function addModuleImportToRootModule(host: Tree, moduleName: string, src: string, project: Project) {
+export function addModuleImportToRootModule(host: Tree, moduleName: string, src: string, project: WorkspaceProject) {
   const modulePath = getAppModulePath(host, project.architect.build.options.main);
   addModuleImportToModule(host, modulePath, moduleName, src);
 }
@@ -53,7 +61,7 @@ export function addModuleImportToModule(host: Tree, modulePath: string, moduleNa
 }
 
 /** Gets the app index.html file */
-export function getIndexHtmlPath(host: Tree, project: Project): string {
+export function getIndexHtmlPath(project: WorkspaceProject): string {
   const buildTarget = project.architect.build.options;
 
   if (buildTarget.index && buildTarget.index.endsWith('index.html')) {
@@ -64,7 +72,7 @@ export function getIndexHtmlPath(host: Tree, project: Project): string {
 }
 
 /** Get the root stylesheet file. */
-export function getStylesPath(host: Tree, project: Project): string {
+export function getStylesPath(project: WorkspaceProject): string {
   const buildTarget = project.architect['build'];
 
   if (buildTarget.options && buildTarget.options.styles && buildTarget.options.styles.length) {
@@ -85,4 +93,20 @@ export function getStylesPath(host: Tree, project: Project): string {
   }
 
   throw new SchematicsException('No style files could be found into which a theme could be added');
+}
+
+/** Wraps the internal find module from options with undefined path handling  */
+export function findModuleFromOptions(host: Tree, options: any) {
+  const workspace = getWorkspace(host);
+  if (!options.project) {
+    options.project = Object.keys(workspace.projects)[0];
+  }
+
+  const project = workspace.projects[options.project];
+
+  if (options.path === undefined) {
+    options.path = `/${project.root}/src/app`;
+  }
+
+  return internalFindModule(host, options);
 }
