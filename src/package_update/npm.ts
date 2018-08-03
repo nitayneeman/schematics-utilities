@@ -5,249 +5,228 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { JsonObject, JsonParseMode, logging, parseJson } from '@angular-devkit/core';
-import { Rule, SchematicContext, SchematicsException, Tree, chain } from '@angular-devkit/schematics';
-import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import * as https from 'https';
-import { EMPTY, Observable, ReplaySubject, concat, from as observableFrom, of as observableOf } from 'rxjs';
-import { ignoreElements, map, mergeMap } from 'rxjs/operators';
-import * as semver from 'semver';
+import { logging } from '@angular-devkit/core';
+import { exec } from 'child_process';
+import { readFileSync } from 'fs';
+import { Observable, ReplaySubject, concat, of } from 'rxjs';
+import { catchError, concatMap, defaultIfEmpty, filter, first, map, shareReplay, toArray } from 'rxjs/operators';
+import * as url from 'url';
+import { NpmRepositoryPackageJson } from './npm-package-json';
 
-const semverIntersect = require('semver-intersect');
+const RegistryClient = require('npm-registry-client');
 
-const kPackageJsonDependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'];
-
-const npmPackageJsonCache = new Map<string, Observable<JsonObject>>();
+const npmPackageJsonCache = new Map<string, Observable<NpmRepositoryPackageJson>>();
+const npmConfigOptionCache = new Map<string, Observable<string | undefined>>();
 
 /**
  * @private
  */
-function _getVersionFromNpmPackage(json: JsonObject, version: string, loose: boolean): string {
-  const distTags = json['dist-tags'] as JsonObject;
-  if (distTags && distTags[version]) {
-    return ((loose ? '~' : '') + distTags[version]) as string;
-  } else {
-    if (!semver.validRange(version)) {
-      throw new SchematicsException(`Invalid range or version: "${version}".`);
-    }
-    if (semver.valid(version) && loose) {
-      version = '~' + version;
-    }
+function _readNpmRc(): Observable<{ [key: string]: string }> {
+  return new Observable<{ [key: string]: string }>(subject => {
+    // TODO: have a way to read options without using fs directly.
+    const path = require('path');
+    const fs = require('fs');
 
-    const packageVersions = Object.keys(json['versions'] as JsonObject);
-    const maybeMatch = semver.maxSatisfying(packageVersions, version);
-
-    if (!maybeMatch) {
-      throw new SchematicsException(`Version "${version}" has no satisfying version for package ${json['name']}`);
-    }
-
-    const maybeOperator = version.match(/^[~^]/);
-    if (version == '*') {
-      return maybeMatch;
-    } else if (maybeOperator) {
-      return maybeOperator[0] + maybeMatch;
+    let npmrc = '';
+    if (process.platform === 'win32') {
+      if (process.env.LOCALAPPDATA) {
+        npmrc = fs.readFileSync(path.join(process.env.LOCALAPPDATA, '.npmrc')).toString('utf-8');
+      }
     } else {
-      return (loose ? '~' : '') + maybeMatch;
+      if (process.env.HOME) {
+        npmrc = fs.readFileSync(path.join(process.env.HOME, '.npmrc')).toString('utf-8');
+      }
     }
+
+    const allOptionsArr = npmrc.split(/\r?\n/).map(x => x.trim());
+    const allOptions: { [key: string]: string } = {};
+
+    allOptionsArr.forEach(x => {
+      const [key, ...value] = x.split('=');
+      allOptions[key] = value.join('=');
+    });
+
+    subject.next(allOptions);
+    subject.complete();
+  }).pipe(
+    catchError(() => of({})),
+    shareReplay()
+  );
+}
+
+export function getOptionFromNpmRc(option: string): Observable<string | undefined> {
+  return _readNpmRc().pipe(map(options => options[option]));
+}
+
+export function getOptionFromNpmCli(option: string): Observable<string | undefined> {
+  return new Observable<string | undefined>(subject => {
+    exec(`npm get ${option}`, (error, data) => {
+      if (error) {
+        throw error;
+      } else {
+        data = data.trim();
+        if (!data || data === 'undefined' || data === 'null') {
+          subject.next();
+        } else {
+          subject.next(data);
+        }
+      }
+
+      subject.complete();
+    });
+  }).pipe(
+    catchError(() => of()),
+    shareReplay()
+  );
+}
+
+export function getNpmConfigOption(
+  option: string,
+  scope?: string,
+  tryWithoutScope?: boolean
+): Observable<string | undefined> {
+  if (scope && tryWithoutScope) {
+    return concat(getNpmConfigOption(option, scope), getNpmConfigOption(option)).pipe(
+      filter(result => !!result),
+      defaultIfEmpty(),
+      first()
+    );
   }
+
+  const fullOption = `${scope ? scope + ':' : ''}${option}`;
+
+  let value = npmConfigOptionCache.get(fullOption);
+  if (value) {
+    return value;
+  }
+
+  value = option.startsWith('_') ? getOptionFromNpmRc(fullOption) : getOptionFromNpmCli(fullOption);
+
+  npmConfigOptionCache.set(fullOption, value);
+
+  return value;
+}
+
+export function getNpmClientSslOptions(strictSsl?: string, cafile?: string) {
+  const sslOptions: { strict?: boolean; ca?: Buffer } = {};
+
+  if (strictSsl === 'false') {
+    sslOptions.strict = false;
+  } else if (strictSsl === 'true') {
+    sslOptions.strict = true;
+  }
+
+  if (cafile) {
+    sslOptions.ca = readFileSync(cafile);
+  }
+
+  return sslOptions;
 }
 
 /**
  * Get the NPM repository's package.json for a package. This is p
  * @param {string} packageName The package name to fetch.
+ * @param {string} registryUrl The NPM Registry URL to use.
  * @param {LoggerApi} logger A logger instance to log debug information.
- * @returns {Observable<JsonObject>} An observable that will put the pacakge.json content.
+ * @returns An observable that will put the pacakge.json content.
  * @private
  */
-function _getNpmPackageJson(packageName: string, logger: logging.LoggerApi): Observable<JsonObject> {
-  const url = `https://registry.npmjs.org/${packageName.replace(/\//g, '%2F')}`;
-  logger.debug(`Getting package.json from ${JSON.stringify(packageName)}...`);
+export function getNpmPackageJson(
+  packageName: string,
+  registryUrl: string | undefined,
+  logger: logging.LoggerApi
+): Observable<Partial<NpmRepositoryPackageJson>> {
+  const scope = packageName.startsWith('@') ? packageName.split('/')[0] : undefined;
 
-  let maybeRequest = npmPackageJsonCache.get(url);
-  if (!maybeRequest) {
-    const subject = new ReplaySubject<JsonObject>(1);
-
-    const request = https.request(url, response => {
-      let data = '';
-      response.on('data', chunk => (data += chunk));
-      response.on('end', () => {
-        try {
-          const json = parseJson(data, JsonParseMode.Strict);
-          subject.next(json as JsonObject);
-          subject.complete();
-        } catch (err) {
-          subject.error(err);
-        }
-      });
-      response.on('error', err => subject.error(err));
-    });
-    request.end();
-
-    maybeRequest = subject.asObservable();
-    npmPackageJsonCache.set(url, maybeRequest);
-  }
-
-  return maybeRequest;
-}
-
-/**
- * Recursively get versions of packages to update to, along with peer dependencies. Only recurse
- * peer dependencies and only update versions of packages that are in the original package.json.
- * @param {JsonObject} packageJson The original package.json to update.
- * @param {{[p: string]: string}} packages
- * @param {{[p: string]: string}} allVersions
- * @param {LoggerApi} logger
- * @param {boolean} loose
- * @returns {Observable<void>}
- * @private
- */
-function _getRecursiveVersions(
-  packageJson: JsonObject,
-  packages: { [name: string]: string },
-  allVersions: { [name: string]: string },
-  logger: logging.LoggerApi,
-  loose: boolean
-): Observable<void> {
-  return observableFrom(kPackageJsonDependencyFields).pipe(
-    mergeMap(field => {
-      const deps = packageJson[field] as JsonObject;
-      if (deps) {
-        return observableFrom(
-          Object.keys(deps)
-            .map(depName => (depName in deps ? [depName, deps[depName]] : null))
-            .filter(x => !!x)
-        );
-      } else {
-        return EMPTY;
+  return (registryUrl ? of(registryUrl) : getNpmConfigOption('registry', scope, true)).pipe(
+    map(partialUrl => {
+      if (!partialUrl) {
+        partialUrl = 'https://registry.npmjs.org/';
       }
+      const partial = url.parse(partialUrl);
+      let fullUrl = new url.URL(`http://${partial.host}/${packageName.replace(/\//g, '%2F')}`);
+      try {
+        const registry = new url.URL(partialUrl);
+        registry.pathname = (registry.pathname || '').replace(/\/?$/, '/' + packageName.replace(/\//g, '%2F'));
+        fullUrl = new url.URL(url.format(registry));
+      } catch {}
+
+      logger.debug(`Getting package.json from '${packageName}' (url: ${JSON.stringify(fullUrl)})...`);
+
+      return fullUrl;
     }),
-    mergeMap(([depName, depVersion]: [string, string]) => {
-      if (!packages[depName] || packages[depName] === depVersion) {
-        return EMPTY;
-      }
-      if (allVersions[depName] && semver.intersects(allVersions[depName], depVersion)) {
-        allVersions[depName] = semverIntersect.intersect(allVersions[depName], depVersion);
-
-        return EMPTY;
+    concatMap(fullUrl => {
+      let maybeRequest = npmPackageJsonCache.get(fullUrl.toString());
+      if (maybeRequest) {
+        return maybeRequest;
       }
 
-      return _getNpmPackageJson(depName, logger).pipe(
-        map(json => ({
-          version: packages[depName],
-          depName,
-          depVersion,
-          npmPackageJson: json
-        }))
-      );
-    }),
-    mergeMap(({ version, depName, depVersion, npmPackageJson }) => {
-      const updateVersion = _getVersionFromNpmPackage(npmPackageJson, version, loose);
-      const npmPackageVersions = Object.keys(npmPackageJson['versions'] as JsonObject);
-      const match = semver.maxSatisfying(npmPackageVersions, updateVersion);
-      if (!match) {
-        return EMPTY;
-      }
-      if (
-        semver.lt(semverIntersect.parseRange(updateVersion).version, semverIntersect.parseRange(depVersion).version)
-      ) {
-        throw new SchematicsException(
-          `Cannot downgrade package ${JSON.stringify(depName)} from version "${depVersion}" to "${updateVersion}".`
-        );
-      }
-
-      const innerNpmPackageJson = (npmPackageJson['versions'] as JsonObject)[match] as JsonObject;
-      const dependencies: { [name: string]: string } = {};
-
-      const deps = innerNpmPackageJson['peerDependencies'] as JsonObject;
-      if (deps) {
-        for (const depName of Object.keys(deps)) {
-          dependencies[depName] = deps[depName] as string;
-        }
-      }
-
-      logger.debug(`Recording update for ${JSON.stringify(depName)} to version ${updateVersion}.`);
-
-      if (allVersions[depName]) {
-        if (!semver.intersects(allVersions[depName], updateVersion)) {
-          throw new SchematicsException(
-            'Cannot update safely because packages have conflicting dependencies. Package ' +
-              `${depName} would need to match both versions "${updateVersion}" and ` +
-              `"${allVersions[depName]}, which are not compatible.`
-          );
-        }
-
-        allVersions[depName] = semverIntersect.intersect(allVersions[depName], updateVersion);
-      } else {
-        allVersions[depName] = updateVersion;
-      }
-
-      return _getRecursiveVersions(packageJson, dependencies, allVersions, logger, loose);
-    })
-  );
-}
-
-/**
- * Use a Rule which can return an observable, but do not actually modify the Tree.
- * This rules perform an HTTPS request to get the npm registry package.json, then resolve the
- * version from the options, and replace the version in the options by an actual version.
- * @param supportedPackages A list of packages to update (at the same version).
- * @param maybeVersion A version to update those packages to.
- * @param loose Whether to use loose version operators (instead of specific versions).
- */
-export function updatePackageJson(supportedPackages: string[], maybeVersion = 'latest', loose = false): Rule {
-  const version = maybeVersion ? maybeVersion : 'latest';
-  // This will be updated as we read the NPM repository.
-  const allVersions: { [name: string]: string } = {};
-
-  return chain([
-    (tree: Tree, context: SchematicContext): Observable<Tree> => {
-      const packageJsonContent = tree.read('/package.json');
-      if (!packageJsonContent) {
-        throw new SchematicsException('Could not find package.json.');
-      }
-      const packageJson = parseJson(packageJsonContent.toString(), JsonParseMode.Strict);
-      if (packageJson === null || typeof packageJson !== 'object' || Array.isArray(packageJson)) {
-        throw new SchematicsException('Could not parse package.json.');
-      }
-      const packages: { [name: string]: string } = {};
-      for (const name of supportedPackages) {
-        packages[name] = version;
-      }
+      const registryKey = `//${fullUrl.host}/`;
 
       return concat(
-        _getRecursiveVersions(packageJson, packages, allVersions, context.logger, loose).pipe(ignoreElements()),
-        observableOf(tree)
-      );
-    },
-    (tree: Tree) => {
-      const packageJsonContent = tree.read('/package.json');
-      if (!packageJsonContent) {
-        throw new SchematicsException('Could not find package.json.');
-      }
-      const packageJson = parseJson(packageJsonContent.toString(), JsonParseMode.Strict);
-      if (packageJson === null || typeof packageJson !== 'object' || Array.isArray(packageJson)) {
-        throw new SchematicsException('Could not parse package.json.');
-      }
+        getNpmConfigOption('proxy'),
+        getNpmConfigOption('https-proxy'),
+        getNpmConfigOption('strict-ssl'),
+        getNpmConfigOption('cafile'),
+        getNpmConfigOption('_auth'),
+        getNpmConfigOption('_authToken', registryKey),
+        getNpmConfigOption('username', registryKey, true),
+        getNpmConfigOption('password', registryKey, true),
+        getNpmConfigOption('alwaysAuth', registryKey, true)
+      ).pipe(
+        toArray(),
+        concatMap(options => {
+          const [http, https, strictSsl, cafile, token, authToken, username, password, alwaysAuth] = options;
 
-      for (const field of kPackageJsonDependencyFields) {
-        const deps = packageJson[field];
-        if (!deps || typeof deps !== 'object' || Array.isArray(deps)) {
-          continue;
-        }
+          const subject = new ReplaySubject<NpmRepositoryPackageJson>(1);
 
-        for (const depName of Object.keys(deps)) {
-          if (allVersions[depName]) {
-            deps[depName] = allVersions[depName];
+          const sslOptions = getNpmClientSslOptions(strictSsl, cafile);
+
+          const auth: {
+            token?: string;
+            alwaysAuth?: boolean;
+            username?: string;
+            password?: string;
+          } = {};
+
+          if (alwaysAuth !== undefined) {
+            auth.alwaysAuth = alwaysAuth === 'false' ? false : !!alwaysAuth;
           }
-        }
-      }
 
-      tree.overwrite('/package.json', JSON.stringify(packageJson, null, 2) + '\n');
+          if (authToken) {
+            auth.token = authToken;
+          } else if (token) {
+            auth.token = token;
+          } else if (username) {
+            auth.username = username;
+            auth.password = password;
+          }
 
-      return tree;
-    },
-    (_tree: Tree, context: SchematicContext) => {
-      context.addTask(new NodePackageInstallTask());
-    }
-  ]);
+          const client = new RegistryClient({
+            proxy: { http, https },
+            ssl: sslOptions
+          });
+          client.log.level = 'silent';
+          const params = {
+            timeout: 30000,
+            auth
+          };
+
+          client.get(fullUrl.toString(), params, (error: object, data: NpmRepositoryPackageJson) => {
+            if (error) {
+              subject.error(error);
+            }
+
+            subject.next(data);
+            subject.complete();
+          });
+
+          maybeRequest = subject.asObservable();
+          npmPackageJsonCache.set(fullUrl.toString(), maybeRequest);
+
+          return maybeRequest;
+        })
+      );
+    })
+  );
 }
