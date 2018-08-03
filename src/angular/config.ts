@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { JsonParseMode, experimental, parseJson } from '@angular-devkit/core';
-import { Rule, SchematicsException, Tree } from '@angular-devkit/schematics';
+import { Rule, SchematicContext, SchematicsException, Tree } from '@angular-devkit/schematics';
 
 // The interfaces below are generated from the Angular CLI configuration schema
 // https://github.com/angular/angular-cli/blob/master/packages/@angular/cli/lib/config/schema.json
@@ -505,7 +505,7 @@ export function getWorkspace(host: Tree): WorkspaceSchema {
 }
 
 export function addProjectToWorkspace(workspace: WorkspaceSchema, name: string, project: WorkspaceProject): Rule {
-  return (host: Tree) => {
+  return (host: Tree, context: SchematicContext) => {
     if (workspace.projects[name]) {
       throw new Error(`Project '${name}' already exists in workspace.`);
     }
