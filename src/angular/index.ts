@@ -1,5 +1,6 @@
 export * from './ast-utils';
 export * from './change';
+export * from './component-schema';
 export * from './config';
 export * from './dependencies';
 export * from './find-module';
