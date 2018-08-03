@@ -5,6 +5,7 @@ export * from './dependencies';
 export * from './find-module';
 export * from './json-utils';
 export * from './latest-versions';
+export * from './lint-fix';
 export * from './ng-ast-utils';
 export * from './parse-name';
 export * from './project';
