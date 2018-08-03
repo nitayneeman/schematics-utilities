@@ -162,7 +162,6 @@ export function findNode(node: ts.Node, kind: ts.SyntaxKind, text: string): ts.N
 /**
  * Helper for sorting nodes.
  * @return function to sort nodes in increasing order of position in sourceFile
- * @private
  */
 function nodesByPosition(first: ts.Node, second: ts.Node): number {
   return first.getStart() - second.getStart();
