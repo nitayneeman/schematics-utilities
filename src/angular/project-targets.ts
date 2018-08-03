@@ -11,7 +11,7 @@ import { experimental } from '@angular-devkit/core';
 export function getProjectTargets(
   project: experimental.workspace.WorkspaceProject
 ): experimental.workspace.WorkspaceTool {
-  const projectTargets = project.targets || project.architect;
+  const projectTargets = (<any>project).targets || project.architect;
   if (!projectTargets) {
     throw new Error('Project architect not found.');
   }

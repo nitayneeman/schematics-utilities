@@ -58,7 +58,7 @@ export function getOptionFromNpmRc(option: string): Observable<string | undefine
   return _readNpmRc().pipe(map(options => options[option]));
 }
 
-export function getOptionFromNpmCli(option: string): Observable<string | undefined> {
+export function getOptionFromNpmCli(option: string): Observable<any> {
   return new Observable<string | undefined>(subject => {
     exec(`npm get ${option}`, (error, data) => {
       if (error) {

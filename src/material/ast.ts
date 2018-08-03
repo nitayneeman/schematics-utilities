@@ -96,7 +96,7 @@ export function getStylesPath(project: WorkspaceProject): string {
 }
 
 /** Wraps the internal find module from options with undefined path handling  */
-export function findModuleFromOptions(host: Tree, options: any) {
+export function findModuleFromOptionsWithPathHandling(host: Tree, options: any) {
   const workspace = getWorkspace(host);
   if (!options.project) {
     options.project = Object.keys(workspace.projects)[0];

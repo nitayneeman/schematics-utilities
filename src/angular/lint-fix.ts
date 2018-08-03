@@ -36,11 +36,14 @@ export function applyLintFix(path = '/'): Rule {
     }, new Set<string>());
 
     context.addTask(
-      new TslintFixTask({
-        ignoreErrors: true,
-        tsConfigPath: 'tsconfig.json',
-        files: [...files]
-      })
+      new TslintFixTask(
+        {
+          ignoreErrors: true,
+          tsConfigPath: 'tsconfig.json',
+          files: [...files]
+        },
+        {}
+      )
     );
   };
 }
