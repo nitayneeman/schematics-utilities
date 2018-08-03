@@ -65,8 +65,8 @@ export function findBootstrapModulePath(host: Tree, mainPath: string): string {
   const source = ts.createSourceFile(mainPath, mainText, ts.ScriptTarget.Latest, true);
   const allNodes = getSourceNodes(source);
   const bootstrapModuleRelativePath = allNodes
-    .filter((node: any) => node.kind === ts.SyntaxKind.ImportDeclaration)
-    .filter((imp: any) => {
+    .filter(node => node.kind === ts.SyntaxKind.ImportDeclaration)
+    .filter(imp => {
       return findNode(imp, ts.SyntaxKind.Identifier, bootstrapModule.getText());
     })
     .map((imp: ts.ImportDeclaration) => {
