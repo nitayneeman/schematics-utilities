@@ -13,7 +13,7 @@ export function getProjectTargets(
 ): experimental.workspace.WorkspaceTool {
   const projectTargets = (<any>project).targets || project.architect;
   if (!projectTargets) {
-    throw new Error('Project architect not found.');
+    throw new Error('Project targets not found.');
   }
 
   return projectTargets;

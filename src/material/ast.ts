@@ -30,7 +30,8 @@ export function getSourceFile(host: Tree, path: string): ts.SourceFile {
 
 /** Import and add module to root app module. */
 export function addModuleImportToRootModule(host: Tree, moduleName: string, src: string, project: WorkspaceProject) {
-  const modulePath = getAppModulePath(host, project.architect.build.options.main);
+  const targets = (<any>project).targets || project.architect;
+  const modulePath = getAppModulePath(host, targets.build.options.main);
   addModuleImportToModule(host, modulePath, moduleName, src);
 }
 
@@ -62,7 +63,8 @@ export function addModuleImportToModule(host: Tree, modulePath: string, moduleNa
 
 /** Gets the app index.html file */
 export function getIndexHtmlPath(project: WorkspaceProject): string {
-  const buildTarget = project.architect.build.options;
+  const targets = (<any>project).targets || project.architect;
+  const buildTarget = targets.build.options;
 
   if (buildTarget.index && buildTarget.index.endsWith('index.html')) {
     return buildTarget.index;
@@ -73,7 +75,8 @@ export function getIndexHtmlPath(project: WorkspaceProject): string {
 
 /** Get the root stylesheet file. */
 export function getStylesPath(project: WorkspaceProject): string {
-  const buildTarget = project.architect['build'];
+  const targets = (<any>project).targets || project.architect;
+  const buildTarget = targets['build'];
 
   if (buildTarget.options && buildTarget.options.styles && buildTarget.options.styles.length) {
     const styles = buildTarget.options.styles.map(s => (typeof s === 'string' ? s : s.input));
