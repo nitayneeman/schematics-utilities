@@ -51,7 +51,7 @@ export function createTestApp(): UnitTestTree {
  * Note that this means that there can be multiple tasks with the same name. The observable emits
  * only when all tasks finished executing.
  */
-export function runPostScheduledTasks(runner: SchematicTestRunner, taskName: string): Observable<void> {
+export function runPostScheduledTasks(runner: SchematicTestRunner, taskName: string): Observable<void | {}> {
   // Workaround until there is a public API to run scheduled tasks in the @angular-devkit.
   // See: https://github.com/angular/angular-cli/issues/11739
   const host = runner.engine['_host'] as EngineHost<{}, {}>;
@@ -61,9 +61,12 @@ export function runPostScheduledTasks(runner: SchematicTestRunner, taskName: str
     concatMap(scheduler => scheduler.finalize()),
     filter(task => task.configuration.name === taskName),
     concatMap(task => {
-      return host
-        .createTaskExecutor(task.configuration.name)
-        .pipe(concatMap(executor => executor(task.configuration.options, task.context)));
+      return (
+        host
+          .createTaskExecutor(task.configuration.name)
+          // @ts-ignore
+          .pipe(concatMap(executor => executor(task.configuration.options, task.context)))
+      );
     }),
     // Only emit the last emitted value because there can be multiple tasks with the same name.
     // The observable should only emit a value if all tasks completed.
