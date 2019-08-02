@@ -28,9 +28,7 @@ import { Rule, Tree } from '@angular-devkit/schematics';
 import { addPackageJsonDependency, NodeDependency, NodeDependencyType } from 'schematics-utilities';
 
 function addDependencies(host: Tree): Tree {
-  const dependencies: NodeDependency[] = [
-    { type: NodeDependencyType.Default, version: '4.17.10', name: 'lodash-es' }
-  ];
+  const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Default, version: '4.17.10', name: 'lodash-es' }];
 
   // 2. Just use it whenever you need :)
   dependencies.forEach(dependency => addPackageJsonDependency(host, dependency));
@@ -54,6 +52,6 @@ Check out the [API docs](https://nitayneeman.github.io/schematics-utilities/) fo
 This repository contains code which is directly taken from:
 
 - [Angular Schematics package](https://github.com/angular/angular-cli/tree/master/packages/schematics)
-- [Angular Material](https://github.com/angular/material2/tree/master/src/lib/schematics/utils)
+- [Angular Material](https://github.com/angular/components/tree/master/src/cdk/schematics/utils)
 
 All credits go to the respective developers! 👏
