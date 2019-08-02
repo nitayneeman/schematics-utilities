@@ -1,10 +1,19 @@
-# Schematics Utilities
+<h1 align="center">Schematics Utilities</h1>
 
-[![npm](https://img.shields.io/npm/v/schematics-utilities.svg?colorB=brightgreen)](https://www.npmjs.com/package/schematics-utilities)
-[![Package Version](https://img.shields.io/github/package-json/v/nitayneeman/schematics-utilities.svg)](https://github.com/nitayneeman/schematics-utilities)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nitayneeman/schematics-utilities/blob/master/LICENSE)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![docs: typedoc](https://img.shields.io/badge/docs-typedoc-4D0080.svg)](https://nitayneeman.github.io/schematics-utilities/)
+<p align="center">
+  <a href="https://www.npmjs.com/package/schematics-utilities"><img src="https://img.shields.io/npm/v/schematics-utilities.svg?colorB=cb3837" alt="npm"></a>
+  <a href="https://nitayneeman.github.io/schematics-utilities/"><img src="https://img.shields.io/badge/docs-typedoc-green.svg" alt="Docs"></a>
+  <a href="https://www.npmjs.com/package/schematics-utilities"><img src="https://img.shields.io/npm/dt/schematics-utilities?color=blue" alt="Downloads"></a>
+  <a href="https://github.com/nitayneeman/schematics-utilities/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgray.svg" alt="License"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/nitayneeman/schematics-utilities#how-to-install">Installation</a> ·
+  <a href="https://github.com/nitayneeman/schematics-utilities#how-to-use">Usage</a> ·
+  <a href="https://github.com/nitayneeman/schematics-utilities#disclaimer">Disclaimer</a>
+</p>
+
+## ℹ️️ Description
 
 At the moment, none of the utilities from the Angular Schematics package are exported.
 
@@ -12,7 +21,9 @@ This project was created from that purpose - _providing a collection of general 
 
 You might use this project as a polyfill until these utilities will be exported officially by the relevant teams (and then just replace the path you import). However, consider sticking with this project for additional and unique utilities which are planned for the future.
 
-## How to Install
+<br>
+
+## 🔧 How to Install
 
 To Install using npm, simply do:
 
@@ -20,7 +31,9 @@ To Install using npm, simply do:
 npm install schematics-utilities
 ```
 
-## How to Use
+<br>
+
+## 👨🏻‍🏫 How to Use
 
 ```javascript
 import { Rule, Tree } from '@angular-devkit/schematics';
@@ -47,7 +60,9 @@ export default function(): Rule {
 
 Check out the [API docs](https://nitayneeman.github.io/schematics-utilities/) for the available utilities.
 
-## Disclaimer
+<br>
+
+## ⚠️️ Disclaimer
 
 This repository contains code which is directly taken from:
 
@@ -55,3 +70,9 @@ This repository contains code which is directly taken from:
 - [Angular Material](https://github.com/angular/components/tree/master/src/cdk/schematics/utils)
 
 All credits go to the respective developers! 👏
+
+<br>
+
+## 💁🏻 Contributing
+
+This is an open source project. Any contribution would be greatly appreciated!
