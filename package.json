@@ -1,6 +1,6 @@
 {
   "name": "schematics-utilities",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": "Nitay Neeman",
   "description": "🛠️ Useful exported utilities for working with Schematics",
   "homepage": "https://github.com/nitayneeman/schematics-utilities",
