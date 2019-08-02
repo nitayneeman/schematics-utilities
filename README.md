@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/nitayneeman/schematics-utilities/blob/master/images/logo.png?raw=true" alt="Puppeteer Logo">
+</p>
+
 <h1 align="center">Schematics Utilities</h1>
 
 <p align="center">
