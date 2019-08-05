@@ -12,9 +12,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nitayneeman/schematics-utilities#how-to-install">Installation</a> ·
-  <a href="https://github.com/nitayneeman/schematics-utilities#how-to-use">Usage</a> ·
-  <a href="https://github.com/nitayneeman/schematics-utilities#disclaimer">Disclaimer</a>
+  <a href="https://github.com/nitayneeman/schematics-utilities#-how-to-install">Installation</a> ·
+  <a href="https://github.com/nitayneeman/schematics-utilities#-how-to-use">Usage</a> ·
+  <a href="https://github.com/nitayneeman/schematics-utilities#%EF%B8%8F%EF%B8%8F-disclaimer">Disclaimer</a>
 </p>
 
 ## ℹ️️ Description
