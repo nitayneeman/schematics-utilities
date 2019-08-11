@@ -27,17 +27,15 @@ import { FileSystemSchematicContext } from '@angular-devkit/schematics/tools';
 import {
   addDeclarationToModule,
   addEntryComponentToModule,
-  addExportToModule,
-  InsertChange,
-  getWorkspace,
-  buildRelativePath,
-  findModuleFromOptions,
-  parseName,
-  buildDefaultPath,
-  validateHtmlSelector,
-  validateName,
-  Schema as ComponentOptions
-} from '../angular';
+  addExportToModule
+} from '@schematics/angular/utility/ast-utils';
+import { InsertChange } from '@schematics/angular/utility/change';
+import { getWorkspace } from '@schematics/angular/utility/config';
+import { buildRelativePath, findModuleFromOptions } from '@schematics/angular/utility/find-module';
+import { parseName } from '@schematics/angular/utility/parse-name';
+import { buildDefaultPath } from '@schematics/angular/utility/project';
+import { validateHtmlSelector, validateName } from '@schematics/angular/utility/validation';
+import { Schema as ComponentOptions } from '@schematics/angular/component/schema';
 import { resolve, dirname, join } from 'path';
 import { readFileSync } from 'fs';
 import * as ts from 'typescript';

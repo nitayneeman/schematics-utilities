@@ -35,12 +35,13 @@
     "test": "npm run build && jasmine src/**/*_spec.js"
   },
   "dependencies": {
-    "@angular-devkit/core": "^7.3.6",
-    "@angular-devkit/schematics": "^7.3.6",
+    "@angular-devkit/core": "^8.2.1",
+    "@angular-devkit/schematics": "^8.2.1",
     "npm-registry-client": "^8.5.1",
     "parse5": "^5.0.0",
     "rxjs": "^6.4.0",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3333",
+    "@schematics/angular": "^8.0.3"
   },
   "devDependencies": {
     "@types/jasmine": "^2.6.0",
