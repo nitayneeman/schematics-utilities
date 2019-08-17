@@ -37,18 +37,18 @@
   "dependencies": {
     "@angular-devkit/core": "^7.3.6",
     "@angular-devkit/schematics": "^7.3.6",
-    "npm-registry-client": "^8.5.1",
-    "parse5": "^5.0.0",
-    "rxjs": "^6.4.0",
-    "typescript": "^3.3.3333"
+    "npm-registry-client": "^8.6.0",
+    "parse5": "^5.1.0",
+    "rxjs": "^6.5.2",
+    "typescript": "^3.5.3"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.6.0",
+    "@types/jasmine": "^3.4.0",
     "@types/node": "^8.0.31",
-    "husky": "^0.14.3",
-    "jasmine": "^2.8.0",
-    "prettier": "^1.13.5",
-    "pretty-quick": "^1.6.0",
-    "typedoc": "^0.14.2"
+    "husky": "^3.0.4",
+    "jasmine": "^3.4.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
+    "typedoc": "^0.15.0"
   }
 }
