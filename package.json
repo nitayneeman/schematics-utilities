@@ -35,8 +35,8 @@
     "test": "npm run build"
   },
   "dependencies": {
-    "@angular-devkit/core": "^7.3.6",
-    "@angular-devkit/schematics": "^7.3.6",
+    "@angular-devkit/core": "^8.2.2",
+    "@angular-devkit/schematics": "^8.2.2",
     "npm-registry-client": "^8.6.0",
     "parse5": "^5.1.0",
     "rxjs": "^6.5.2",
