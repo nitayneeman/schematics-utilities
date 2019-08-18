@@ -1,23 +1,3 @@
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+import { getProjectFromWorkspace } from '@angular/cdk/schematics';
 
-import { WorkspaceProject, WorkspaceSchema } from '../angular';
-
-/**
- * Finds the specified project configuration in the workspace. Throws an error if the project
- * couldn't be found.
- */
-export function getProjectFromWorkspace(workspace: WorkspaceSchema, projectName?: string): WorkspaceProject {
-  let project = workspace.projects[projectName || workspace.defaultProject];
-
-  if (!project) {
-    throw new Error(`Could not find project in workspace: ${projectName}`);
-  }
-
-  return project;
-}
+export { getProjectFromWorkspace };
