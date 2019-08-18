@@ -6,121 +6,80 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { logging } from '@angular-devkit/core';
-import { exec } from 'child_process';
-import { readFileSync } from 'fs';
-import { Observable, ReplaySubject, concat, of } from 'rxjs';
-import { catchError, concatMap, defaultIfEmpty, filter, first, map, shareReplay, toArray } from 'rxjs/operators';
-import * as url from 'url';
+import { existsSync, readFileSync } from 'fs';
+import { homedir } from 'os';
+import * as path from 'path';
+import { EMPTY, Observable, from } from 'rxjs';
+import { catchError, shareReplay } from 'rxjs/operators';
 import { NpmRepositoryPackageJson } from './npm-package-json';
 
-const RegistryClient = require('npm-registry-client');
+const ini = require('ini');
+const lockfile = require('@yarnpkg/lockfile');
+const pacote = require('pacote');
 
 const npmPackageJsonCache = new Map<string, Observable<NpmRepositoryPackageJson>>();
-const npmConfigOptionCache = new Map<string, Observable<string | undefined>>();
+let npmrc: { [key: string]: string };
 
-/**
- * @private
- */
-function _readNpmRc(): Observable<{ [key: string]: string }> {
-  return new Observable<{ [key: string]: string }>(subject => {
-    // TODO: have a way to read options without using fs directly.
-    const path = require('path');
-    const fs = require('fs');
+function readOptions(logger: logging.LoggerApi, yarn = false, showPotentials = false): Record<string, string> {
+  const cwd = process.cwd();
+  const baseFilename = yarn ? 'yarnrc' : 'npmrc';
+  const dotFilename = '.' + baseFilename;
 
-    let npmrc = '';
-    if (process.platform === 'win32') {
-      if (process.env.LOCALAPPDATA) {
-        npmrc = fs.readFileSync(path.join(process.env.LOCALAPPDATA, '.npmrc')).toString('utf-8');
-      }
-    } else {
-      if (process.env.HOME) {
-        npmrc = fs.readFileSync(path.join(process.env.HOME, '.npmrc')).toString('utf-8');
-      }
+  let globalPrefix: string;
+  if (process.env.PREFIX) {
+    globalPrefix = process.env.PREFIX;
+  } else {
+    globalPrefix = path.dirname(process.execPath);
+    if (process.platform !== 'win32') {
+      globalPrefix = path.dirname(globalPrefix);
     }
+  }
 
-    const allOptionsArr = npmrc.split(/\r?\n/).map(x => x.trim());
-    const allOptions: { [key: string]: string } = {};
+  const defaultConfigLocations = [path.join(globalPrefix, 'etc', baseFilename), path.join(homedir(), dotFilename)];
 
-    allOptionsArr.forEach(x => {
-      const [key, ...value] = x.split('=');
-      allOptions[key] = value.join('=');
-    });
+  const projectConfigLocations: string[] = [path.join(cwd, dotFilename)];
+  const root = path.parse(cwd).root;
+  for (let curDir = path.dirname(cwd); curDir && curDir !== root; curDir = path.dirname(curDir)) {
+    projectConfigLocations.unshift(path.join(curDir, dotFilename));
+  }
 
-    subject.next(allOptions);
-    subject.complete();
-  }).pipe(
-    catchError(() => of({})),
-    shareReplay()
-  );
-}
+  if (showPotentials) {
+    logger.info(`Locating potential ${baseFilename} files:`);
+  }
 
-export function getOptionFromNpmRc(option: string): Observable<string | undefined> {
-  return _readNpmRc().pipe(map(options => options[option]));
-}
-
-export function getOptionFromNpmCli(option: string): Observable<any> {
-  return new Observable<string | undefined>(subject => {
-    exec(`npm get ${option}`, (error, data) => {
-      if (error) {
-        throw error;
-      } else {
-        data = data.trim();
-        if (!data || data === 'undefined' || data === 'null') {
-          subject.next();
-        } else {
-          subject.next(data);
-        }
+  let options: { [key: string]: string } = {};
+  for (const location of [...defaultConfigLocations, ...projectConfigLocations]) {
+    if (existsSync(location)) {
+      if (showPotentials) {
+        logger.info(`Trying '${location}'...found.`);
       }
 
-      subject.complete();
-    });
-  }).pipe(
-    catchError(() => of()),
-    shareReplay()
-  );
-}
+      const data = readFileSync(location, 'utf8');
+      options = {
+        ...options,
+        ...(yarn ? lockfile.parse(data) : ini.parse(data))
+      };
 
-export function getNpmConfigOption(
-  option: string,
-  scope?: string,
-  tryWithoutScope?: boolean
-): Observable<string | undefined> {
-  if (scope && tryWithoutScope) {
-    return concat(getNpmConfigOption(option, scope), getNpmConfigOption(option)).pipe(
-      filter(result => !!result),
-      defaultIfEmpty(),
-      first()
-    );
+      if (options.cafile) {
+        const cafile = path.resolve(path.dirname(location), options.cafile);
+        delete options.cafile;
+        try {
+          options.ca = readFileSync(cafile, 'utf8').replace(/\r?\n/, '\\n');
+        } catch {}
+      }
+    } else if (showPotentials) {
+      logger.info(`Trying '${location}'...not found.`);
+    }
   }
 
-  const fullOption = `${scope ? scope + ':' : ''}${option}`;
-
-  let value = npmConfigOptionCache.get(fullOption);
-  if (value) {
-    return value;
+  // Substitute any environment variable references
+  for (const key in options) {
+    if (typeof options[key] === 'string') {
+      options[key] = options[key].replace(/\$\{([^\}]+)\}/, (_, name) => process.env[name] || '');
+    }
   }
 
-  value = option.startsWith('_') ? getOptionFromNpmRc(fullOption) : getOptionFromNpmCli(fullOption);
-
-  npmConfigOptionCache.set(fullOption, value);
-
-  return value;
-}
-
-export function getNpmClientSslOptions(strictSsl?: string, cafile?: string) {
-  const sslOptions: { strict?: boolean; ca?: Buffer } = {};
-
-  if (strictSsl === 'false') {
-    sslOptions.strict = false;
-  } else if (strictSsl === 'true') {
-    sslOptions.strict = true;
-  }
-
-  if (cafile) {
-    sslOptions.ca = readFileSync(cafile);
-  }
-
-  return sslOptions;
+  return options;
 }
 
 /**
@@ -133,100 +92,46 @@ export function getNpmClientSslOptions(strictSsl?: string, cafile?: string) {
  */
 export function getNpmPackageJson(
   packageName: string,
-  registryUrl: string | undefined,
-  logger: logging.LoggerApi
+  logger: logging.LoggerApi,
+  options?: {
+    registryUrl?: string;
+    usingYarn?: boolean;
+    verbose?: boolean;
+  }
 ): Observable<Partial<NpmRepositoryPackageJson>> {
-  const scope = packageName.startsWith('@') ? packageName.split('/')[0] : undefined;
+  const cachedResponse = npmPackageJsonCache.get(packageName);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
 
-  return (registryUrl ? of(registryUrl) : getNpmConfigOption('registry', scope, true)).pipe(
-    map(partialUrl => {
-      if (!partialUrl) {
-        partialUrl = 'https://registry.npmjs.org/';
-      }
-      const partial = url.parse(partialUrl);
-      let fullUrl = new url.URL(`http://${partial.host}/${packageName.replace(/\//g, '%2F')}`);
+  if (!npmrc) {
+    try {
+      npmrc = readOptions(logger, false, options && options.verbose);
+    } catch {}
+
+    if (options && options.usingYarn) {
       try {
-        const registry = new url.URL(partialUrl);
-        registry.pathname = (registry.pathname || '').replace(/\/?$/, '/' + packageName.replace(/\//g, '%2F'));
-        fullUrl = new url.URL(url.format(registry));
+        npmrc = { ...npmrc, ...readOptions(logger, true, options && options.verbose) };
       } catch {}
+    }
+  }
 
-      logger.debug(`Getting package.json from '${packageName}' (url: ${JSON.stringify(fullUrl)})...`);
+  const resultPromise: Promise<NpmRepositoryPackageJson> = pacote.packument(packageName, {
+    'full-metadata': true,
+    ...npmrc,
+    ...(options && options.registryUrl ? { registry: options.registryUrl } : {})
+  });
 
-      return fullUrl;
-    }),
-    concatMap(fullUrl => {
-      let maybeRequest = npmPackageJsonCache.get(fullUrl.toString());
-      if (maybeRequest) {
-        return maybeRequest;
-      }
+  // TODO: find some way to test this
+  const response = from(resultPromise).pipe(
+    shareReplay(),
+    catchError(err => {
+      logger.warn(err.message || err);
 
-      const registryKey = `//${fullUrl.host}/`;
-
-      return concat(
-        getNpmConfigOption('proxy'),
-        getNpmConfigOption('https-proxy'),
-        getNpmConfigOption('strict-ssl'),
-        getNpmConfigOption('cafile'),
-        getNpmConfigOption('_auth'),
-        getNpmConfigOption('_authToken', registryKey),
-        getNpmConfigOption('username', registryKey, true),
-        getNpmConfigOption('password', registryKey, true),
-        getNpmConfigOption('alwaysAuth', registryKey, true)
-      ).pipe(
-        toArray(),
-        concatMap(options => {
-          const [http, https, strictSsl, cafile, token, authToken, username, password, alwaysAuth] = options;
-
-          const subject = new ReplaySubject<NpmRepositoryPackageJson>(1);
-
-          const sslOptions = getNpmClientSslOptions(strictSsl, cafile);
-
-          const auth: {
-            token?: string;
-            alwaysAuth?: boolean;
-            username?: string;
-            password?: string;
-          } = {};
-
-          if (alwaysAuth !== undefined) {
-            auth.alwaysAuth = alwaysAuth === 'false' ? false : !!alwaysAuth;
-          }
-
-          if (authToken) {
-            auth.token = authToken;
-          } else if (token) {
-            auth.token = token;
-          } else if (username) {
-            auth.username = username;
-            auth.password = password;
-          }
-
-          const client = new RegistryClient({
-            proxy: { http, https },
-            ssl: sslOptions
-          });
-          client.log.level = 'silent';
-          const params = {
-            timeout: 30000,
-            auth
-          };
-
-          client.get(fullUrl.toString(), params, (error: object, data: NpmRepositoryPackageJson) => {
-            if (error) {
-              subject.error(error);
-            }
-
-            subject.next(data);
-            subject.complete();
-          });
-
-          maybeRequest = subject.asObservable();
-          npmPackageJsonCache.set(fullUrl.toString(), maybeRequest);
-
-          return maybeRequest;
-        })
-      );
+      return EMPTY;
     })
   );
+  npmPackageJsonCache.set(packageName, response);
+
+  return response;
 }
