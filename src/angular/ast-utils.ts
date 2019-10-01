@@ -19,8 +19,9 @@ import {
   addRouteDeclarationToModule as originalAddRouteDeclarationToModule,
   isImported as originalIsImported
 } from '@schematics/angular/utility/ast-utils';
-import { Change, InsertChange } from '@schematics/angular/utility/change';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
+
+import { Change } from './change';
 
 /**
  * Add Import `import { symbolName } from fileName` if the import doesn't exit
