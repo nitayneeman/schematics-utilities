@@ -1,3 +1,10 @@
-import { getProjectFromWorkspace } from '@angular/cdk/schematics';
+import { getProjectFromWorkspace as originalGetProjectFromWorkspace } from '@angular/cdk/schematics';
+import { WorkspaceSchema, WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
 
-export { getProjectFromWorkspace };
+/**
+ * Finds the specified project configuration in the workspace. Throws an error if the project
+ * couldn't be found.
+ */
+export function getProjectFromWorkspace(workspace: WorkspaceSchema, projectName?: string): WorkspaceProject {
+  return originalGetProjectFromWorkspace(workspace, projectName);
+}
