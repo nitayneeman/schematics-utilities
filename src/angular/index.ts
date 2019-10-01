@@ -12,3 +12,4 @@ export * from './parse-name';
 export * from './project';
 export * from './project-targets';
 export * from './validation';
+export * from './workspace-models';
