@@ -9,6 +9,7 @@ export * from './latest-versions';
 export * from './lint-fix';
 export * from './ng-ast-utils';
 export * from './parse-name';
+export * from './paths';
 export * from './project';
 export * from './project-targets';
 export * from './validation';
