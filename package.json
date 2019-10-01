@@ -37,6 +37,7 @@
   "dependencies": {
     "@angular-devkit/core": "^8.2.2",
     "@angular-devkit/schematics": "^8.2.2",
+    "@angular/cdk": "^8.2.2",
     "@schematics/angular": "^8.2.2",
     "npm-registry-client": "^8.6.0",
     "parse5": "^5.1.0",
