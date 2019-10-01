@@ -4,9 +4,10 @@ import {
   getSourceFile as originalGetSourceFile,
   addModuleImportToRootModule as originalAddModuleImportToRootModule,
   addModuleImportToModule as originalAddModuleImportToModule,
-  findModuleFromOptions as originalFindModuleFromOptions,
   typescript
 } from '@angular/cdk/schematics';
+
+import { WorkspaceProject } from '../angular/workspace-models';
 
 /** Reads file given path and returns TypeScript source file. */
 export function getSourceFile(host: Tree, path: string): typescript.SourceFile {
@@ -27,11 +28,6 @@ export function addModuleImportToRootModule(host: Tree, moduleName: string, src:
  */
 export function addModuleImportToModule(host: Tree, modulePath: string, moduleName: string, src: string) {
   return originalAddModuleImportToModule(host, modulePath, moduleName, src);
-}
-
-/** Wraps the internal find module from options with undefined path handling  */
-export function findModuleFromOptions(host: Tree, options: ComponentOptions): string | undefined {
-  return originalFindModuleFromOptions(host, options);
 }
 
 // TODO: Remove after finishing the migration completely
