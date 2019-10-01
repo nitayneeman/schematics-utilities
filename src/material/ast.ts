@@ -1,5 +1,4 @@
 import { Tree } from '@angular-devkit/schematics';
-import { Schema as ComponentOptions } from '@schematics/angular/component/schema';
 import {
   getSourceFile as originalGetSourceFile,
   addModuleImportToRootModule as originalAddModuleImportToRootModule,
