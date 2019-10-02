@@ -32,7 +32,7 @@
     "precommit": "npm run format:staged",
     "prepublish": "npm run clean && npm run build",
     "publish:docs": "./scripts/publish-docs.sh",
-    "test": "npm run build"
+    "test:sanity": "cd examples && npx schematics .:add-bootstrap"
   },
   "dependencies": {
     "@angular-devkit/core": "^8.2.2",
