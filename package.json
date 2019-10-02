@@ -40,9 +40,11 @@
     "@angular/cdk": "^8.2.2",
     "@schematics/angular": "^8.3.6",
     "@schematics/update": "^0.803.6",
-    "parse5": "^5.1.0",
     "rxjs": "^6.5.3",
     "typescript": "^3.6.3"
+  },
+  "optionalDependencies": {
+    "parse5": "^5.1.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.4.0",
