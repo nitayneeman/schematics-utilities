@@ -43,6 +43,7 @@
     "typescript": "^3.5.3"
   },
   "devDependencies": {
+    "@angular-devkit/schematics-cli": "^0.803.6",
     "@types/jasmine": "^3.4.0",
     "@types/node": "^8.0.31",
     "husky": "^3.0.4",
