@@ -42,8 +42,8 @@
     "@schematics/update": "^0.803.6",
     "npm-registry-client": "^8.6.0",
     "parse5": "^5.1.0",
-    "rxjs": "^6.5.2",
-    "typescript": "^3.5.3"
+    "rxjs": "^6.5.3",
+    "typescript": "^3.6.3"
   },
   "devDependencies": {
     "@types/jasmine": "^3.4.0",
