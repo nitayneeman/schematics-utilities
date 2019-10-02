@@ -32,7 +32,7 @@
     "precommit": "npm run format:staged",
     "prepublish": "npm run clean && npm run build",
     "publish:docs": "./scripts/publish-docs.sh",
-    "test": "npm run build"
+    "test:sanity": "cd examples && npm install && npm run build && schematics .:add-bootstrap"
   },
   "dependencies": {
     "@angular-devkit/core": "^8.3.6",
@@ -47,6 +47,7 @@
     "parse5": "^5.1.0"
   },
   "devDependencies": {
+    "@angular-devkit/schematics-cli": "^0.803.6",
     "@types/jasmine": "^3.4.0",
     "@types/node": "^8.0.31",
     "husky": "^3.0.4",
