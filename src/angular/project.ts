@@ -1,20 +1,33 @@
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-import { WorkspaceProject } from './config';
+import { Tree } from '@angular-devkit/schematics';
+import {
+  buildDefaultPath as originalBuildDefaultPath,
+  getProject as originalGetProject,
+  isWorkspaceSchema as originalIsWorkspaceSchema,
+  isWorkspaceProject as originalIsWorkspaceProject
+} from '@schematics/angular/utility/project';
+
+import { ProjectType, WorkspaceProject, WorkspaceSchema } from './workspace-models';
 
 /**
  * Build a default project path for generating.
  * @param project The project to build the path for.
  */
 export function buildDefaultPath(project: WorkspaceProject): string {
-  const root = project.sourceRoot ? `/${project.sourceRoot}/` : `/${project.root}/src/`;
+  return originalBuildDefaultPath(project);
+}
 
-  const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
+export function getProject<TProjectType extends ProjectType = ProjectType.Application>(
+  workspaceOrHost: WorkspaceSchema | Tree,
+  projectName: string
+): WorkspaceProject<TProjectType> {
+  // TODO: fix the type error
+  return <any>originalGetProject(workspaceOrHost, projectName);
+}
 
-  return `${root}${projectDirName}`;
+export function isWorkspaceSchema(workspace: any): workspace is WorkspaceSchema {
+  return originalIsWorkspaceSchema(workspace);
+}
+
+export function isWorkspaceProject(project: any): project is WorkspaceProject {
+  return originalIsWorkspaceProject(project);
 }

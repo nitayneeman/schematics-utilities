@@ -1,20 +1,21 @@
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+import { SchematicsException, Tree } from '@angular-devkit/schematics';
+import {
+  getProjectTargets as originalGetProjectTargets,
+  targetBuildNotFoundError as originalTargetBuildNotFoundError
+} from '@schematics/angular/utility/project-targets';
 
-import { experimental } from '@angular-devkit/core';
+import { WorkspaceProject, WorkspaceSchema, WorkspaceTargets } from './workspace-models';
 
+export function getProjectTargets(project: WorkspaceProject): WorkspaceTargets;
+export function getProjectTargets(workspaceOrHost: WorkspaceSchema | Tree, projectName: string): WorkspaceTargets;
 export function getProjectTargets(
-  project: experimental.workspace.WorkspaceProject
-): experimental.workspace.WorkspaceTool {
-  const projectTargets = (<any>project).targets || project.architect;
-  if (!projectTargets) {
-    throw new Error('Project targets not found.');
-  }
+  projectOrHost: WorkspaceProject | Tree | WorkspaceSchema,
+  projectName = ''
+): WorkspaceTargets {
+  // TODO: fix the type error
+  return originalGetProjectTargets(<any>projectOrHost, projectName);
+}
 
-  return projectTargets;
+export function targetBuildNotFoundError(): SchematicsException {
+  return originalTargetBuildNotFoundError();
 }

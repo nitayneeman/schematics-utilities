@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Add new utility functions:
+
+  - `getRouterModuleDeclaration`
+  - `addRouteDeclarationToModule`
+  - `updateWorkspace`
+  - `getConfig`
+  - `relativePathToWorkspaceRoot`
+  - `getProject`
+  - `isWorkspaceSchema`
+  - `isWorkspaceProject`
+  - `hasNgModuleImport`
+  - `appendHtmlElementToHead`
+  - `getHtmlHeadTagElement`
+  - `targetBuildNotFoundError`
+
+### Changed
+
+- Change the code to import and reuse the original source
+
+### Removed
+
+- Remove utility functions:
+
+- `getHeadTag`
+- `addHeadLink`
+- `getIndexHtmlPath`
+- `getStylesPath`
+- `runPostScheduledTasks`
+
 ## [1.1.3] - 2019-08-02
 
 ### Docs

@@ -1,12 +1,13 @@
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
-import { JsonAstArray, JsonAstKeyValue, JsonAstNode, JsonAstObject, JsonValue } from '@angular-devkit/core';
+import { JsonAstArray, JsonAstNode, JsonAstObject, JsonValue } from '@angular-devkit/core';
 import { UpdateRecorder } from '@angular-devkit/schematics';
+
+import {
+  appendPropertyInAstObject as originalAppendPropertyInAstObject,
+  removePropertyInAstObject as originalRemovePropertyInAstObject,
+  insertPropertyInAstObjectInOrder as originalInsertPropertyInAstObjectInOrder,
+  appendValueInAstArray as originalAppendValueInAstArray,
+  findPropertyInAstObject as originalFindPropertyInAstObject
+} from '@schematics/angular/utility/json-utils';
 
 export function appendPropertyInAstObject(
   recorder: UpdateRecorder,
@@ -15,18 +16,7 @@ export function appendPropertyInAstObject(
   value: JsonValue,
   indent: number
 ) {
-  const indentStr = _buildIndent(indent);
-
-  if (node.properties.length > 0) {
-    // Insert comma.
-    const last = node.properties[node.properties.length - 1];
-    recorder.insertRight(last.start.offset + last.text.replace(/\s+$/, '').length, ',');
-  }
-
-  recorder.insertLeft(
-    node.end.offset - 1,
-    '  ' + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` + indentStr.slice(0, -2)
-  );
+  return originalAppendPropertyInAstObject(recorder, node, propertyName, value, indent);
 }
 
 export function insertPropertyInAstObjectInOrder(
@@ -36,76 +26,17 @@ export function insertPropertyInAstObjectInOrder(
   value: JsonValue,
   indent: number
 ) {
-  if (node.properties.length === 0) {
-    appendPropertyInAstObject(recorder, node, propertyName, value, indent);
+  return originalInsertPropertyInAstObjectInOrder(recorder, node, propertyName, value, indent);
+}
 
-    return;
-  }
-
-  // Find insertion info.
-  let insertAfterProp: JsonAstKeyValue | null = null;
-  let prev: JsonAstKeyValue | null = null;
-  let isLastProp = false;
-  const last = node.properties[node.properties.length - 1];
-  for (const prop of node.properties) {
-    if (prop.key.value > propertyName) {
-      if (prev) {
-        insertAfterProp = prev;
-      }
-      break;
-    }
-    if (prop === last) {
-      isLastProp = true;
-      insertAfterProp = last;
-    }
-    prev = prop;
-  }
-
-  if (isLastProp) {
-    appendPropertyInAstObject(recorder, node, propertyName, value, indent);
-
-    return;
-  }
-
-  const indentStr = _buildIndent(indent);
-
-  const insertIndex = insertAfterProp === null ? node.start.offset + 1 : insertAfterProp.end.offset + 1;
-
-  recorder.insertRight(
-    insertIndex,
-    indentStr + `"${propertyName}": ${JSON.stringify(value, null, 2).replace(/\n/g, indentStr)}` + ','
-  );
+export function removePropertyInAstObject(recorder: UpdateRecorder, node: JsonAstObject, propertyName: string) {
+  return originalRemovePropertyInAstObject(recorder, node, propertyName);
 }
 
 export function appendValueInAstArray(recorder: UpdateRecorder, node: JsonAstArray, value: JsonValue, indent = 4) {
-  const indentStr = _buildIndent(indent);
-
-  if (node.elements.length > 0) {
-    // Insert comma.
-    const last = node.elements[node.elements.length - 1];
-    recorder.insertRight(last.start.offset + last.text.replace(/\s+$/, '').length, ',');
-  }
-
-  recorder.insertLeft(
-    node.end.offset - 1,
-    '  ' + JSON.stringify(value, null, 2).replace(/\n/g, indentStr) + indentStr.slice(0, -2)
-  );
+  return originalAppendValueInAstArray(recorder, node, value, indent);
 }
 
 export function findPropertyInAstObject(node: JsonAstObject, propertyName: string): JsonAstNode | null {
-  let maybeNode: JsonAstNode | null = null;
-  for (const property of node.properties) {
-    if (property.key.value == propertyName) {
-      maybeNode = property.value;
-    }
-  }
-
-  return maybeNode;
-}
-
-/**
- * @private
- */
-function _buildIndent(count: number): string {
-  return '\n' + new Array(count + 1).join(' ');
+  return originalFindPropertyInAstObject(node, propertyName);
 }
