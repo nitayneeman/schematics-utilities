@@ -35,11 +35,11 @@
     "test:sanity": "./scripts/test-sanity.sh"
   },
   "dependencies": {
-    "@angular-devkit/core": "^8.3.6",
-    "@angular-devkit/schematics": "^8.3.6",
+    "@angular-devkit/core": "^8.3.8",
+    "@angular-devkit/schematics": "^8.3.8",
     "@angular/cdk": "^8.2.2",
-    "@schematics/angular": "^8.3.6",
-    "@schematics/update": "^0.803.6",
+    "@schematics/angular": "^8.3.8",
+    "@schematics/update": "^0.803.8",
     "rxjs": "^6.5.3",
     "typescript": "^3.6.3"
   },
@@ -47,11 +47,11 @@
     "parse5": "^5.1.0"
   },
   "devDependencies": {
-    "@angular-devkit/schematics-cli": "^0.803.6",
-    "@types/jasmine": "^3.4.0",
+    "@angular-devkit/schematics-cli": "^0.803.8",
+    "@types/jasmine": "^3.4.2",
     "@types/node": "^8.0.31",
-    "husky": "^3.0.4",
-    "jasmine": "^3.4.0",
+    "husky": "^3.0.8",
+    "jasmine": "^3.5.0",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
     "typedoc": "^0.15.0"
