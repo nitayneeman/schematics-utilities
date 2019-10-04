@@ -1,7 +1,9 @@
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { targetBuildNotFoundError as originalTargetBuildNotFoundError } from '@schematics/angular/utility/project-targets';
+import {
+  getProjectTargets as originalGetProjectTargets,
+  targetBuildNotFoundError as originalTargetBuildNotFoundError
+} from '@schematics/angular/utility/project-targets';
 
-import { getProject, isWorkspaceProject } from './project';
 import { WorkspaceProject, WorkspaceSchema, WorkspaceTargets } from './workspace-models';
 
 export function getProjectTargets(project: WorkspaceProject): WorkspaceTargets;
@@ -10,14 +12,8 @@ export function getProjectTargets(
   projectOrHost: WorkspaceProject | Tree | WorkspaceSchema,
   projectName = ''
 ): WorkspaceTargets {
-  const project = isWorkspaceProject(projectOrHost) ? projectOrHost : getProject(projectOrHost, projectName);
-
-  const projectTargets = project.targets || project.architect;
-  if (!projectTargets) {
-    throw new Error('Project target not found.');
-  }
-
-  return projectTargets;
+  // TODO: fix the type error
+  return originalGetProjectTargets(<any>projectOrHost, projectName);
 }
 
 export function targetBuildNotFoundError(): SchematicsException {
