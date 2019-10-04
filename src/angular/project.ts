@@ -1,11 +1,11 @@
 import { Tree } from '@angular-devkit/schematics';
 import {
   buildDefaultPath as originalBuildDefaultPath,
+  getProject as originalGetProject,
   isWorkspaceSchema as originalIsWorkspaceSchema,
   isWorkspaceProject as originalIsWorkspaceProject
 } from '@schematics/angular/utility/project';
 
-import { getWorkspace } from './config';
 import { ProjectType, WorkspaceProject, WorkspaceSchema } from './workspace-models';
 
 /**
@@ -20,9 +20,8 @@ export function getProject<TProjectType extends ProjectType = ProjectType.Applic
   workspaceOrHost: WorkspaceSchema | Tree,
   projectName: string
 ): WorkspaceProject<TProjectType> {
-  const workspace = isWorkspaceSchema(workspaceOrHost) ? workspaceOrHost : getWorkspace(workspaceOrHost);
-
-  return workspace.projects[projectName] as WorkspaceProject<TProjectType>;
+  // TODO: fix the type error
+  return <any>originalGetProject(workspaceOrHost, projectName);
 }
 
 export function isWorkspaceSchema(workspace: any): workspace is WorkspaceSchema {
