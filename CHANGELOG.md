@@ -28,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change the code to import and reuse the original source
 
+### Removed
+
+- Remove utility functions:
+
+- `getHeadTag`
+- `addHeadLink`
+- `runPostScheduledTasks`
+
 ## [1.1.3] - 2019-08-02
 
 ### Docs
