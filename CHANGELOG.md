@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `hasNgModuleImport`
   - `appendHtmlElementToHead`
   - `getHtmlHeadTagElement`
+  - `targetBuildNotFoundError`
+
+### Changed
+
+- Change the code to import and reuse the original source
 
 ## [1.1.3] - 2019-08-02
 
