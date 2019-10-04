@@ -28,9 +28,3 @@ export function addModuleImportToRootModule(host: Tree, moduleName: string, src:
 export function addModuleImportToModule(host: Tree, modulePath: string, moduleName: string, src: string) {
   return originalAddModuleImportToModule(host, modulePath, moduleName, src);
 }
-
-// TODO: Remove after finishing the migration completely
-export function getIndexHtmlPath(): any {}
-
-// TODO: Remove after finishing the migration completely
-export function getStylesPath(): any {}

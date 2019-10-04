@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `getHeadTag`
 - `addHeadLink`
+- `getIndexHtmlPath`
+- `getStylesPath`
 - `runPostScheduledTasks`
 
 ## [1.1.3] - 2019-08-02

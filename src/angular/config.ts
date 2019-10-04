@@ -62,7 +62,3 @@ export function getConfig(host: Tree): CliConfig {
 export function getAppFromConfig(config: CliConfig, appIndexOrName: string): AppConfig | null {
   return originalGetAppFromConfig(config, appIndexOrName);
 }
-
-// TODO: Remove after finishing the migration completely
-// export type WorkspaceSchema = experimental.workspace.WorkspaceSchema;
-// export type WorkspaceProject = experimental.workspace.WorkspaceProject;
