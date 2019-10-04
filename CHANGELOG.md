@@ -32,11 +32,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove utility functions:
 
-- `getHeadTag`
-- `addHeadLink`
-- `getIndexHtmlPath`
-- `getStylesPath`
-- `runPostScheduledTasks`
+  - `getHeadTag`
+  - `addHeadLink`
+  - `getIndexHtmlPath`
+  - `getStylesPath`
+  - `runPostScheduledTasks`
 
 ## [1.1.3] - 2019-08-02
 
