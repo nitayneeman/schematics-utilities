@@ -40,7 +40,7 @@
     "@angular/cdk": "^8.2.2",
     "@schematics/angular": "^8.3.8",
     "@schematics/update": "^0.803.8",
-    "rxjs": "^6.5.3",
+    "rxjs": "^6.4.0",
     "typescript": "^3.6.3"
   },
   "optionalDependencies": {
