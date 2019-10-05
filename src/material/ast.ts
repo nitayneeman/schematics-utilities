@@ -5,8 +5,7 @@ import {
   addModuleImportToModule as originalAddModuleImportToModule,
   typescript
 } from '@angular/cdk/schematics';
-
-import { WorkspaceProject } from '../angular/workspace-models';
+import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
 
 /** Reads file given path and returns TypeScript source file. */
 export function getSourceFile(host: Tree, path: string): typescript.SourceFile {
