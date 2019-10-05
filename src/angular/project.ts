@@ -5,8 +5,7 @@ import {
   isWorkspaceSchema as originalIsWorkspaceSchema,
   isWorkspaceProject as originalIsWorkspaceProject
 } from '@schematics/angular/utility/project';
-
-import { ProjectType, WorkspaceProject, WorkspaceSchema } from './workspace-models';
+import { ProjectType, WorkspaceProject, WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
 
 /**
  * Build a default project path for generating.
@@ -20,8 +19,7 @@ export function getProject<TProjectType extends ProjectType = ProjectType.Applic
   workspaceOrHost: WorkspaceSchema | Tree,
   projectName: string
 ): WorkspaceProject<TProjectType> {
-  // TODO: fix the type error
-  return <any>originalGetProject(workspaceOrHost, projectName);
+  return originalGetProject(workspaceOrHost, projectName);
 }
 
 export function isWorkspaceSchema(workspace: any): workspace is WorkspaceSchema {
