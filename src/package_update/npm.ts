@@ -20,6 +20,5 @@ export function getNpmPackageJson(
     verbose?: boolean;
   }
 ): Observable<Partial<NpmRepositoryPackageJson>> {
-  // TODO: fix the type error
-  return <any>originalGetNpmPackageJson(packageName, logger, options);
+  return originalGetNpmPackageJson(packageName, logger, options);
 }
