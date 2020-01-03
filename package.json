@@ -35,11 +35,11 @@
     "test:sanity": "./scripts/test-sanity.sh"
   },
   "dependencies": {
-    "@angular-devkit/core": "^8.3.8",
-    "@angular-devkit/schematics": "^8.3.8",
-    "@angular/cdk": "^8.2.2",
-    "@schematics/angular": "^8.3.8",
-    "@schematics/update": "^0.803.8",
+    "@angular-devkit/core": "^8.3.21",
+    "@angular-devkit/schematics": "^8.3.21",
+    "@angular/cdk": "^8.2.3",
+    "@schematics/angular": "^8.3.21",
+    "@schematics/update": "^0.803.21",
     "rxjs": "^6.4.0",
     "typescript": "^3.6.3"
   },
@@ -47,7 +47,7 @@
     "parse5": "^5.1.0"
   },
   "devDependencies": {
-    "@angular-devkit/schematics-cli": "^0.803.8",
+    "@angular-devkit/schematics-cli": "^0.803.21",
     "@types/jasmine": "^3.4.2",
     "@types/node": "^8.0.31",
     "husky": "^3.0.8",
