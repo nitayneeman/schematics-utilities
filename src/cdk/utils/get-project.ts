@@ -1,5 +1,5 @@
 import { SchematicsException } from '@angular-devkit/schematics';
-import { WorkspaceProject, WorkspaceSchema } from '../angular';
+import { WorkspaceProject, WorkspaceSchema } from '../../angular';
 
 /**
  * Finds the specified project configuration in the workspace. Throws an error if the project

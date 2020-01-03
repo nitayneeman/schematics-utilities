@@ -1,5 +1,5 @@
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { addImportToModule, getAppModulePath, InsertChange, WorkspaceProject } from '../angular';
+import { addImportToModule, getAppModulePath, InsertChange, WorkspaceProject } from '../../angular';
 import { getProjectMainFile } from './project-main-file';
 import { ts, typescript } from './version-agnostic-typescript';
 

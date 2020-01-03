@@ -30,7 +30,7 @@ import {
   Schema as ComponentOptions,
   validateHtmlSelector,
   validateName
-} from '../angular';
+} from '../../angular';
 import { getProjectFromWorkspace } from './get-project';
 import { getDefaultComponentOptions } from './schematic-options';
 import { ts } from './version-agnostic-typescript';

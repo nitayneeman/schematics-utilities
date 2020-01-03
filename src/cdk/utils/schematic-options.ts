@@ -1,4 +1,4 @@
-import { WorkspaceProject } from '../angular';
+import { WorkspaceProject } from '../../angular';
 
 /**
  * Returns the default options for the `@schematics/angular:component` schematic which would

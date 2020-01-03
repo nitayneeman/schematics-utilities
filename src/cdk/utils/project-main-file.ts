@@ -1,5 +1,5 @@
 import { SchematicsException } from '@angular-devkit/schematics';
-import { WorkspaceProject } from '../angular';
+import { WorkspaceProject } from '../../angular';
 import { getProjectTargetOptions } from './project-targets';
 
 /** Looks for the main TypeScript file in the given project and returns its path. */
