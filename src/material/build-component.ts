@@ -1,6 +1,6 @@
 import { Rule } from '@angular-devkit/schematics';
-import { Schema as ComponentOptions } from '@schematics/angular/component/schema';
-import { buildComponent as originalBuildComponent } from '@angular/cdk/schematics';
+import { Schema as ComponentOptions } from '../angular';
+import { buildComponent as originalBuildComponent } from '../cdk';
 
 /**
  * Rule that copies and interpolates the files that belong to this schematic context. Additionally
@@ -11,5 +11,5 @@ import { buildComponent as originalBuildComponent } from '@angular/cdk/schematic
  * to manually duplicate the file content.
  */
 export function buildComponent(options: ComponentOptions, additionalFiles: { [key: string]: string } = {}): Rule {
-  return originalBuildComponent(options, additionalFiles);
+  return originalBuildComponent(<any>options, additionalFiles);
 }
