@@ -1,9 +1,9 @@
 import { Tree } from '@angular-devkit/schematics';
-import { DefaultTreeElement } from 'parse5';
 import {
   appendHtmlElementToHead as originalAppendHtmlElementToHead,
   getHtmlHeadTagElement as originalGetHtmlHeadTagElement
-} from '../cdk';
+} from '@angular/cdk/schematics';
+import { DefaultTreeElement } from 'parse5';
 
 /** Appends the given element HTML fragment to the `<head>` element of the specified HTML file. */
 export function appendHtmlElementToHead(host: Tree, htmlFilePath: string, elementHtml: string) {
