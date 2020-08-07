@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2020-08-06
+
+### Fixed
+
+- Adjust CDK source files to allow compatibility with Angular v10 ([#3a0bdc0](https://github.com/nitayneeman/schematics-utilities/commit/3a0bdc09744effc3cf8a9e07e376a61eccc176ce)) - thanks to [@mraible](https://github.com/mraible)
+
 ## [2.0.1] - 2020-01-04
 
 ### Fixed
