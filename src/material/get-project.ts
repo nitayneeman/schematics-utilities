@@ -5,6 +5,6 @@ import { getProjectFromWorkspace as originalGetProjectFromWorkspace } from '../c
  * Finds the specified project configuration in the workspace. Throws an error if the project
  * couldn't be found.
  */
-export function getProjectFromWorkspace(workspace: WorkspaceSchema, projectName?: string): WorkspaceProject {
+export function getProjectFromWorkspace(workspace: WorkspaceSchema, projectName?: string) {
   return originalGetProjectFromWorkspace(workspace, projectName);
 }
