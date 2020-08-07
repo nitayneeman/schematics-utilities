@@ -1,4 +1,12 @@
-import { WorkspaceProject } from '../../angular';
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
+import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
 
 /**
  * Returns the default options for the `@schematics/angular:component` schematic which would

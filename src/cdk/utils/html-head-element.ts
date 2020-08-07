@@ -1,6 +1,14 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { DefaultTreeDocument, DefaultTreeElement, parse as parseHtml } from 'parse5';
 import { getChildElementIndentation } from './parse5-element';
+import { DefaultTreeDocument, DefaultTreeElement, parse as parseHtml } from 'parse5';
 
 /** Appends the given element HTML fragment to the `<head>` element of the specified HTML file. */
 export function appendHtmlElementToHead(host: Tree, htmlFilePath: string, elementHtml: string) {

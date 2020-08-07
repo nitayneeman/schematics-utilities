@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
 import { strings, template as interpolateTemplate } from '@angular-devkit/core';
 import {
   apply,
@@ -14,23 +22,20 @@ import {
   url
 } from '@angular-devkit/schematics';
 import { FileSystemSchematicContext } from '@angular-devkit/schematics/tools';
-import { Style } from '@schematics/angular/component/schema';
-import { readFileSync, statSync } from 'fs';
-import { dirname, join, resolve } from 'path';
+import { Schema as ComponentOptions, Style } from '@schematics/angular/component/schema';
 import {
   addDeclarationToModule,
   addEntryComponentToModule,
-  addExportToModule,
-  buildDefaultPath,
-  buildRelativePath,
-  findModuleFromOptions,
-  getWorkspace,
-  InsertChange,
-  parseName,
-  Schema as ComponentOptions,
-  validateHtmlSelector,
-  validateName
-} from '../../angular';
+  addExportToModule
+} from '@schematics/angular/utility/ast-utils';
+import { InsertChange } from '@schematics/angular/utility/change';
+import { getWorkspace } from '@schematics/angular/utility/config';
+import { buildRelativePath, findModuleFromOptions } from '@schematics/angular/utility/find-module';
+import { parseName } from '@schematics/angular/utility/parse-name';
+import { buildDefaultPath } from '@schematics/angular/utility/project';
+import { validateHtmlSelector, validateName } from '@schematics/angular/utility/validation';
+import { readFileSync, statSync } from 'fs';
+import { dirname, join, resolve } from 'path';
 import { getProjectFromWorkspace } from './get-project';
 import { getDefaultComponentOptions } from './schematic-options';
 import { ts } from './version-agnostic-typescript';
@@ -57,7 +62,7 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
     }
 
     const modulePath = options.module;
-    let source = readIntoSourceFile(host, modulePath);
+    let source: any = readIntoSourceFile(host, modulePath);
 
     const componentPath =
       `/${options.path}/` +
@@ -67,7 +72,7 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
     const relativePath = buildRelativePath(modulePath, componentPath);
     const classifiedName = strings.classify(`${options.name}Component`);
 
-    const declarationChanges = addDeclarationToModule(<any>source, modulePath, classifiedName, relativePath);
+    const declarationChanges = addDeclarationToModule(source, modulePath, classifiedName, relativePath);
 
     const declarationRecorder = host.beginUpdate(modulePath);
     for (const change of declarationChanges) {
@@ -83,7 +88,7 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
 
       const exportRecorder = host.beginUpdate(modulePath);
       const exportChanges = addExportToModule(
-        <any>source,
+        source,
         modulePath,
         strings.classify(`${options.name}Component`),
         relativePath
@@ -103,7 +108,7 @@ function addDeclarationToNgModule(options: ComponentOptions): Rule {
 
       const entryComponentRecorder = host.beginUpdate(modulePath);
       const entryComponentChanges = addEntryComponentToModule(
-        <any>source,
+        source,
         modulePath,
         strings.classify(`${options.name}Component`),
         relativePath
@@ -157,7 +162,7 @@ export function buildComponent(options: ComponentOptions, additionalFiles: { [ke
     const project = getProjectFromWorkspace(workspace, options.project);
     const defaultComponentOptions = getDefaultComponentOptions(project);
 
-    // TODO: Remove if we drop support for older CLI versions.
+    // TODO(devversion): Remove if we drop support for older CLI versions.
     // This handles an unreported breaking change from the @angular-devkit/schematics. Previously
     // the description path resolved to the factory file, but starting from 6.2.0, it resolves
     // to the factory directory.
@@ -175,7 +180,7 @@ export function buildComponent(options: ComponentOptions, additionalFiles: { [ke
       .forEach(optionName => (options[optionName] = defaultComponentOptions[optionName]));
 
     if (options.path === undefined) {
-      // TODO: figure out if the need for this `as any` is a bug due to two different
+      // TODO(jelbourn): figure out if the need for this `as any` is a bug due to two different
       // incompatible `WorkspaceProject` classes in @angular-devkit
       options.path = buildDefaultPath(project as any);
     }
@@ -195,10 +200,10 @@ export function buildComponent(options: ComponentOptions, additionalFiles: { [ke
     // we generate the stylesheets with the "css" extension. This ensures that we don't
     // accidentally generate invalid stylesheets (e.g. drag-drop-comp.styl) which will
     // break the Angular CLI project. See: https://github.com/angular/components/issues/15164
-    if (!supportedCssExtensions.includes((<any>options).style!)) {
+    if (!supportedCssExtensions.includes(options.style!)) {
       // TODO: Cast is necessary as we can't use the Style enum which has been introduced
       // within CLI v7.3.0-rc.0. This would break the schematic for older CLI versions.
-      (<any>options).style = 'css' as Style;
+      options.style = 'css' as Style;
     }
 
     // Object that will be used as context for the EJS templates.
@@ -222,13 +227,13 @@ export function buildComponent(options: ComponentOptions, additionalFiles: { [ke
     }
 
     const templateSource = apply(url(schematicFilesUrl), [
-      (<any>options).skipTests ? filter(path => !path.endsWith('.spec.ts.template')) : noop(),
+      options.skipTests ? filter(path => !path.endsWith('.spec.ts.template')) : noop(),
       options.inlineStyle ? filter(path => !path.endsWith('.__style__.template')) : noop(),
       options.inlineTemplate ? filter(path => !path.endsWith('.html.template')) : noop(),
       // Treat the template options as any, because the type definition for the template options
       // is made unnecessarily explicit. Every type of object can be used in the EJS template.
       applyTemplates({ indentTextContent, resolvedFiles, ...baseTemplateContext } as any),
-      // TODO: figure out why we cannot just remove the first parameter
+      // TODO(devversion): figure out why we cannot just remove the first parameter
       // See for example: angular-cli#schematics/angular/component/index.ts#L160
       move(null as any, parsedPath.path)
     ]);
