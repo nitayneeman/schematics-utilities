@@ -38,7 +38,7 @@
     "@angular-devkit/core": "^8.3.8",
     "@angular-devkit/schematics": "^8.3.8",
     "@schematics/angular": "^8.3.8",
-    "@schematics/update": "^0.803.8",
+    "@schematics/update": "^0.1100.5",
     "rxjs": "^6.4.0",
     "typescript": "^3.6.3"
   },
