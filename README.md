@@ -23,7 +23,7 @@ At the moment, none of the utilities from the Angular Schematics package are exp
 
 This project was created from that purpose - _providing a collection of general and useful utilities for Schematics, based on non-exported existing utilities and further_.
 
-You might use this project as a polyfill until these utilities will be exported officially by the relevant teams (and then just replace the path you import). However, consider sticking with this project for additional and unique utilities which are planned for the future.
+You might use this project as a polyfill until these utilities will be exported officially by the relevant teams (and then just replace the path you import).
 
 <br>
 
