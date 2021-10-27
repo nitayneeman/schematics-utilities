@@ -1,3 +1,13 @@
+// Copied from https://github.com/angular/angular-cli/blob/10.2.x/packages/schematics/angular/utility/workspace-models.ts for Angular 10 compatibility.
+
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+
 import { experimental } from '@angular-devkit/core';
 
 export enum ProjectType {
@@ -11,7 +21,8 @@ export enum Builders {
   Browser = '@angular-devkit/build-angular:browser',
   Karma = '@angular-devkit/build-angular:karma',
   TsLint = '@angular-devkit/build-angular:tslint',
-  NgPackagr = '@angular-devkit/build-ng-packagr:build',
+  DeprecatedNgPackagr = '@angular-devkit/build-ng-packagr:build',
+  NgPackagr = '@angular-devkit/build-angular:ng-packagr',
   DevServer = '@angular-devkit/build-angular:dev-server',
   ExtractI18n = '@angular-devkit/build-angular:extract-i18n',
   Protractor = '@angular-devkit/build-angular:protractor'
@@ -35,10 +46,12 @@ export interface BrowserBuilderBaseOptions {
   sourceMap?: boolean;
 }
 
+export type OutputHashing = 'all' | 'media' | 'none' | 'bundles';
+
 export interface BrowserBuilderOptions extends BrowserBuilderBaseOptions {
   serviceWorker?: boolean;
   optimization?: boolean;
-  outputHashing?: 'all';
+  outputHashing?: OutputHashing;
   resourcesOutputPath?: string;
   extractCss?: boolean;
   namedChunks?: boolean;
@@ -52,7 +65,6 @@ export interface BrowserBuilderOptions extends BrowserBuilderBaseOptions {
     maximumWarning?: string;
     maximumError?: string;
   }[];
-  es5BrowserSupport?: boolean;
   webWorkerTsConfig?: string;
 }
 
@@ -73,7 +85,14 @@ export interface ServerBuilderOptions {
     scripts?: boolean;
     styles?: boolean;
   };
-  sourceMap?: boolean;
+  sourceMap?:
+    | boolean
+    | {
+        scripts?: boolean;
+        styles?: boolean;
+        hidden?: boolean;
+        vendor?: boolean;
+      };
 }
 
 export interface AppShellBuilderOptions {
@@ -151,7 +170,7 @@ export interface WorkspaceTargets<TProjectType extends ProjectType = ProjectType
   e2e?: E2EBuilderTarget;
   'app-shell'?: AppShellBuilderTarget;
   'extract-i18n'?: ExtractI18nBuilderTarget;
-  // TODO change this any to unknown when google3 supports TypeScript 3.0.
+  // TODO(hans): change this any to unknown when google3 supports TypeScript 3.0.
   // tslint:disable-next-line:no-any
   [key: string]: any;
 }

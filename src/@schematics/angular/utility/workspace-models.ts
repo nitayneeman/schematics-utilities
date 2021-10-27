@@ -1,4 +1,4 @@
-// Copied from https://github.com/angular/angular-cli/blob/9.1.x/packages/schematics/angular/utility/workspace-models.ts for Angular 10 compatibility.
+// Copied from https://github.com/angular/angular-cli/blob/10.2.x/packages/schematics/angular/utility/workspace-models.ts for Angular 10 compatibility.
 
 /**
  * @license
@@ -21,7 +21,8 @@ export enum Builders {
   Browser = '@angular-devkit/build-angular:browser',
   Karma = '@angular-devkit/build-angular:karma',
   TsLint = '@angular-devkit/build-angular:tslint',
-  NgPackagr = '@angular-devkit/build-ng-packagr:build',
+  DeprecatedNgPackagr = '@angular-devkit/build-ng-packagr:build',
+  NgPackagr = '@angular-devkit/build-angular:ng-packagr',
   DevServer = '@angular-devkit/build-angular:dev-server',
   ExtractI18n = '@angular-devkit/build-angular:extract-i18n',
   Protractor = '@angular-devkit/build-angular:protractor'
@@ -64,7 +65,6 @@ export interface BrowserBuilderOptions extends BrowserBuilderBaseOptions {
     maximumWarning?: string;
     maximumError?: string;
   }[];
-  es5BrowserSupport?: boolean;
   webWorkerTsConfig?: string;
 }
 
@@ -85,7 +85,14 @@ export interface ServerBuilderOptions {
     scripts?: boolean;
     styles?: boolean;
   };
-  sourceMap?: boolean;
+  sourceMap?:
+    | boolean
+    | {
+        scripts?: boolean;
+        styles?: boolean;
+        hidden?: boolean;
+        vendor?: boolean;
+      };
 }
 
 export interface AppShellBuilderOptions {

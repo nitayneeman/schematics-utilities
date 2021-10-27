@@ -32,7 +32,7 @@ import { InsertChange } from '@schematics/angular/utility/change';
 import { getWorkspace } from '@schematics/angular/utility/config';
 import { buildRelativePath, findModuleFromOptions } from '@schematics/angular/utility/find-module';
 import { parseName } from '@schematics/angular/utility/parse-name';
-import { buildDefaultPath } from '@schematics/angular/utility/project';
+import { buildDefaultPath } from '@schematics/angular/utility/workspace';
 import { validateHtmlSelector, validateName } from '@schematics/angular/utility/validation';
 import { readFileSync, statSync } from 'fs';
 import { dirname, join, resolve } from 'path';
