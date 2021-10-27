@@ -1,5 +1,4 @@
 import { logging } from '@angular-devkit/core';
-import { Observable } from 'rxjs';
 import { getNpmPackageJson as originalGetNpmPackageJson } from '@schematics/update/update/npm';
 
 import { NpmRepositoryPackageJson } from './npm-package-json';
@@ -19,6 +18,6 @@ export function getNpmPackageJson(
     usingYarn?: boolean;
     verbose?: boolean;
   }
-): Observable<Partial<NpmRepositoryPackageJson>> {
+): Promise<Partial<NpmRepositoryPackageJson>> {
   return originalGetNpmPackageJson(packageName, logger, options);
 }

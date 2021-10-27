@@ -1,6 +1,6 @@
 {
   "name": "schematics-utilities",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "author": "Nitay Neeman",
   "description": "🛠️ Useful exported utilities for working with Schematics",
   "homepage": "https://github.com/nitayneeman/schematics-utilities",
@@ -34,25 +34,28 @@
     "publish:docs": "./scripts/publish-docs.sh",
     "test:sanity": "./scripts/test-sanity.sh"
   },
+  "engines": {
+    "node": ">=10.13"
+  },
   "dependencies": {
-    "@angular-devkit/core": "^8.3.8",
-    "@angular-devkit/schematics": "^8.3.8",
-    "@schematics/angular": "^8.3.8",
-    "@schematics/update": "^0.803.8",
-    "rxjs": "^6.4.0",
-    "typescript": "^3.6.3"
+    "@angular-devkit/core": "^10.2.3",
+    "@angular-devkit/schematics": "^10.2.3",
+    "@schematics/angular": "^10.2.3",
+    "@schematics/update": "^0.1002.3",
+    "rxjs": "^6.6.7",
+    "typescript": "^3.9.10"
   },
   "optionalDependencies": {
-    "parse5": "^5.1.0"
+    "parse5": "^5.1.1"
   },
   "devDependencies": {
-    "@angular-devkit/schematics-cli": "^0.803.21",
-    "@types/jasmine": "^3.4.2",
-    "@types/node": "^8.0.31",
-    "husky": "^3.0.8",
-    "jasmine": "^3.5.0",
-    "prettier": "^1.18.2",
+    "@angular-devkit/schematics-cli": "^0.1002.3",
+    "@types/jasmine": "^3.10.1",
+    "@types/node": "^10.12.30",
+    "husky": "^3.1.0",
+    "jasmine": "^3.10.0",
+    "prettier": "^1.19.1",
     "pretty-quick": "^1.11.1",
-    "typedoc": "^0.15.0"
+    "typedoc": "^0.15.8"
   }
 }
